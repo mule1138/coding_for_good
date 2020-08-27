@@ -1,0 +1,17 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.label {
+    font-size: large;
+    font-weight: bold;
+}
+
+.result {
+    font-size: large;
+    font-weight: bold;
+    color: green;
+}
+

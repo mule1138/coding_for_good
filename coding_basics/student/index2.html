@@ -1,0 +1,51 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Coding Basics: Count to 10 with a loop</title>
+
+    <link rel="stylesheet" href="main.css">
+
+    <!-- Load the counter code -->
+    <script src="counter.js"></script>
+    <script>
+        // Count to 10 with a loop
+        function count() {
+            // A "for loop" will repeat code until the test statement is false.
+            // There are three parts to a for loop:
+            //   The first is the variable used to keep track of loop iterations.
+            //     We will start the variable at 0.
+            //   The second is the test condition for the loop. When this is false,
+            //     the loop stops. In this case, the loop will run as long as the
+            //     variable is smaller than 10.
+            //   The third is how we modify the variable each iteration. In this
+            //     case, we add 1 each time.
+
+            //TODO: Make a "for loop" that will call incrementCounter() 10 times
+
+            // Tell the counter to start counting
+            runCounter();
+        }
+    </script>
+</head>
+
+<body onload="count()">
+    <h1>The Super Counter</h1>
+    <div class="description">
+        When this web page loads, it calls a function that increments a counter 10 times. This time, a loop is used to
+        increment the counter.
+    </div>
+    <br />
+    <div>
+        <span class="label">The counter will count to 10.</span>
+    </div>
+    <br />
+
+    <!-- This line shows the output of the counter -->
+    <div>
+        <span class="label">The counter value: </span>
+        <span id="result" class="result">0</span>
+    </div>
+</body>
+
+</html>

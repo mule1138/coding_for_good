@@ -1,0 +1,40 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Coding Basics: Count to 10</title>
+
+    <link rel="stylesheet" href="main.css">
+
+    <!-- Load the counter code -->
+    <script src="counter.js"></script>
+    <script>
+        // Count to 10
+        function count() {
+            // Tell the counter to add 1 ten times by using the function incrementCounter()
+            //TODO: Call incrementCounter() 10 times
+
+            // Tell the counter to start counting by calling runCounter()
+            //TODO: Call runCounter() to start counting
+        }
+    </script>
+</head>
+
+<body onload="count()">
+    <h1>The Super Counter</h1>
+    <div class="description">
+        When this web page loads, it calls a function that increments a counter 10 times.
+    </div>
+    <br />
+    <div>
+        <span class="label">The counter will count to 10.</span>
+    </div>
+    <br />
+    <!-- This line shows the output of the counter -->
+    <div>
+        <span class="label">The counter value: </span>
+        <span id="result" class="result">0</span>
+    </div>
+</body>
+
+</html>

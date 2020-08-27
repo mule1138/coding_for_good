@@ -1,0 +1,103 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Coding Basics: Counting with user input</title>
+
+    <link rel="stylesheet" href="main.css">
+
+    <!-- Load the counter code -->
+    <script src="counter.js"></script>
+    <script>
+        // Count to a number from the user with a while loop
+        function count() {
+            // Get the value the user input from the text box
+            var count = getUserValue();
+
+            // The test statement of the for loop has been updated to compare
+            // the counting variable, 'i', to the user provided 'count' value.
+            for (var i = 0; i < count; i++) {
+                incrementCounter();
+            }
+
+            // The run button is disabled to prevent multiple clicks.
+            disableRunButton(true);
+
+            // The Pause button is enabled to allow the user to pause and
+            // restart the counter.
+            disablePauseButton(false);
+
+            // Tell the counter to start counting. We are providing a callback
+            // function so we will know when the counter has completed counting.
+            runCounter(doneCounting);
+        }
+
+        // Function to get the value from the number box
+        function getUserValue() {
+            // Get the number box from the HTML
+            var inputElement = document.getElementById('countInput');
+
+            // Get the value from the number box
+            var inputValue = inputElement.value;
+
+            // Return the value
+            return inputValue;
+        }
+
+        // This function is used as the callback in runCounter. It handles
+        // the activities we want to do after the counter is done counting.
+        function doneCounting() {
+            // The run button is enabled so the user can start the counter again
+            disableRunButton(false);
+
+            // The Pause button is disabled since the counter is done counting.
+            disablePauseButton(true);
+        }
+
+        // Function to enable or disable the button that starts the counter
+        function disableRunButton(disabled) {
+            var runBtnElement = document.getElementById('runBtn');
+
+            // Set the disabled attribute of the element to the value passed
+            // into the function
+            runBtnElement.disabled = disabled;
+        }
+
+        // Function to enable or disable the counter pause button
+        function disablePauseButton(disabled) {
+            var pauseBtnElement = document.getElementById('pauseBtn');
+            pauseBtnElement.disabled = disabled;
+        }
+
+    </script>
+</head>
+
+<body>
+    <h1>The Super Counter</h1>
+    <div class="description">
+        This version of the web page asks the user what number she wants the counter to count to.<br />
+        The user enters a number then presses the "Start Counting!" button.<br />
+        While the counter is counting, the user can pause and restart the counter with the "Pause" button.<br />
+    </div>
+    <br />
+
+    <!-- Modify the first line so the user can input the number to which she wants to count. -->
+    <div>
+        <span class="label">How high should the counter go?</span>
+        <input id="countInput" type="number" value="0" style="width: 45px;" onchange="resetCounter()" />
+
+        <!-- The onclick event of this button will call the function to read
+            the value and start the counter. -->
+        <input id="runBtn" type="button" value="Start counting!" onclick="count()" />
+    </div>
+    <br />
+    <!-- This line shows the output of the counter -->
+    <div>
+        <span class="label">The counter value: </span>
+        <span id="result" class="result">0</span>
+        <!-- Add a Pause button to pause and restart the counter -->
+        <input id="pauseBtn" type="button" value="Pause" disabled="true" onclick="pauseCounter()" />
+    </div>
+</body>
+
+</html>
