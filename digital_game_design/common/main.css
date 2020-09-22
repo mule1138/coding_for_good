@@ -1,0 +1,41 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.label {
+    font-size: large;
+    font-weight: bold;
+}
+
+.editorContainer {
+    position: relative;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.gridContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.editorCell {
+    border: 1px solid lightgray;
+    padding: 0;
+    margin: 0;
+}
+
+.editorCell::before {
+    content: "";
+    display: inline-block;
+    width: 1px;
+    height: 0;
+    padding-bottom: 100%;
+}
+
+.wall {
+    background-color: black;
+}
