@@ -20,6 +20,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
+    display: grid;
 }
 
 .editorCell {
@@ -27,7 +28,6 @@ body {
     padding: 0;
     margin: 0;
 }
-
 .editorCell::before {
     content: "";
     display: inline-block;
@@ -36,6 +36,24 @@ body {
     padding-bottom: 100%;
 }
 
-.wall {
+#cell_type_selector_container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 100px);
+}
+
+.mazeWall {
     background-color: black;
+}
+.mazePath {
+    background-color: white;
+}
+.mazeStart {
+    background-color: lightgreen;
+}
+.mazeEnd {
+    background-color: red;
+}
+
+.cellHover {
+    background-color: gray;
 }

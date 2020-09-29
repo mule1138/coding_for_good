@@ -32,11 +32,25 @@
 
 <body>
     <h1>Maze Editor</h1>
-    <div>
-        <span class="label">Dimentions:</span> <br />
-        Width: <input id="width_input" type="number"> Height: <input id="height_input" type="number">
-        <input id="save_button" type="button" value="Save Maze">
-    </div>
+    <table style="width: 100%;">
+        <tr>
+            <td width="300px">
+                <div class="label">Dimentions:</div>
+                <div>
+                    Width: <input id="width_input" type="number">
+                </div>
+                <div>
+                    Height: <input id="height_input" type="number">
+                </div>
+            </td>
+            <td>
+                <div id="cell_type_selector_container"></div>
+            </td>
+            <td style="text-align: right;">
+                <input id="save_button" type="button" value="Save Maze">
+            </td>
+        </tr>
+    </table>
     <hr noshade="true" />
     <div id='editor_container' class="editorContainer"></div>
     <!--input id="load_button" type="button" value="Load Maze"-->
