@@ -1,8 +1,9 @@
-import Maze from './maze.js';
+import { Maze, mazeCellTypes } from './maze.js';
 
 const DEFAULT_WIDTH = 20;
 const DEFAULT_HEIGHT = 20;
 let maze = null;
+let currentCellType; // Types specified in mazeCellTypes
 
 init();
 
@@ -13,100 +14,132 @@ function init() {
         maze = new Maze(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
-    // const editorTable = buildEditorTable(maze);
-    // document.getElementById('editor_container').appendChild(editorTable);
-
-    buildEditorGrid(maze, document.getElementById('editor_container'));
-
+    // Fill in the height and width number boxes
     document.getElementById('width_input').value = maze.width;
     document.getElementById('height_input').value = maze.height;
+
+    // Create the cell type radio buttons
+    buildCellTypeSelector();
+
+    // Draw the editor grid
+    refreshEditorGrid();
+
+    // Set flag for when a mouse button is down
+    window.mouseDown = false
+    document.onmousedown = function() {
+        window.mouseDown = true;
+    }
+    document.onmouseup = function() {
+        window.mouseDown = false;
+    }
 }
 
-export function loadMaze() {
-    let maze = null;
+function loadMaze() {
+    let tmpMaze = null;
     const mazeJSON = localStorage.getItem('maze');
     if (mazeJSON) {
-        maze = Maze.fromJSON(mazeJSON);
+        tmpMaze = Maze.fromJSON(mazeJSON);
     }
 
-    return maze;
+    return tmpMaze;
 }
 
-export function saveMaze(editorTable) {
-    const maze = createMazeFromEditorTable(editor);
+function saveMaze(editorTable) {
     const mazeJSON = maze.toJSON();
     localStorage.setItem('maze', mazeJSON);
 }
 
+function refreshEditorGrid() {
+    // Clear the container
+    const container = document.getElementById('editor_container');
+    container.innerHTML = '';
 
-function buildEditorTable(maze) {
-    const width = maze.width;
-    const height = maze.height;
-    const cells = maze.cells;
-    const cellPctWidth = 1 / maze.width * 100;
-
-    console.log(cellPctWidth);
-
-    // Create the table
-    const tableElement = document.createElement("table");
-    tableElement.setAttribute('class', 'editorTable');
-
-    // Add the rows and cells
-    let row, col;
-    let rowElement, cellElement, cellInput;
-    for (row = 0; row < maze.height; ++row) {
-        rowElement = tableElement.insertRow(row);
-
-        for (col = 0; col < maze.width; ++col) {
-            cellElement = rowElement.insertCell(col);
-            cellElement.setAttribute('class', 'wall');
-            // cellElement.setAttribute('style', `width: ${cellPctWidth}%; padding-bottom: ${cellPctWidth}; display: inline-block;`);
-            cellInput = document.createElement("input");
-            cellInput.setAttribute('type', 'hidden');
-            cellInput.setAttribute('id', `${row}-${col}`);
-            cellInput.value = maze.getCellValue(col, row);
-            cellElement.appendChild(cellInput);
-        }
-    }
-
-    return tableElement;
-}
-
-function buildEditorGrid(maze, container) {
     const gridContainer = document.createElement('div');
     gridContainer.setAttribute('class', 'gridContainer');
-    gridContainer.setAttribute('style', `display: grid; grid-template-columns: repeat(${maze.width}, 1fr); grid-template-rows: repeat(${maze.height}, 1fr);`);
+    gridContainer.setAttribute('style', `grid-template-columns: repeat(${maze.width}, 1fr); grid-template-rows: repeat(${maze.height}, 1fr);`);
     container.appendChild(gridContainer);
 
     let cellDiv = null;
-    let row, col;
+    let row, col, cellType;
+    const startCell = maze.getStartCell();
+    const endCell = maze.getEndCell();
 
     for (row = 0; row < maze.height; ++row) {
         for (col = 0; col < maze.width; ++col) {
+            // Set the common stuff for each cell
             cellDiv = document.createElement('div');
             cellDiv.setAttribute('id', `${row}-${col}`);
-            cellDiv.setAttribute('class', 'editorCell wall');
+            cellDiv.setAttribute('class', 'editorCell');
+            attachCellEvents(cellDiv);
+
+            // Set the cell specifics
+            cellType = mazeCellTypes[maze.getCellType(col, row)];
+            cellDiv.classList.add(cellType.class);
+            cellDiv.setAttribute('data-is-path', cellType.isPath);
+
+            // Append the cell to the grid container
             gridContainer.appendChild(cellDiv);
         }
     }
 }
 
-function createMazeFromEditorTable() {
-    const width = document.getElementById('width_input').value;
-    const height = document.getElementById('height_input').value;
-    const cells = new Array();
+function attachCellEvents(cellDiv) {
+    const cellCoords = getCellCoords(cellDiv);
 
-    let row = 0;
-    let col = 0;
-    let cellId = '0-0';
-    let value = false;
-    for (let i = 0; i < width * height; ++i) {
-        row = Math.floor(i / width);
-        col = i % width;
-        cellId = `${row}-${col}`;
-        value = (document.getElementById('cellId').value === 'true') ? true : false;
-        cells.push(value);
-    }
+    cellDiv.addEventListener('click', (evt) => {
+        maze.toggleCellValue(cellCoords.x, cellCoords.y);
+        refreshEditorGrid();
+    });
 
-    return new Maze(width, height, cells);
+    cellDiv.addEventListener('mouseover', (evt) => {
+        cellDiv.classList.add('cellHover');
+        console.log(evt);
+        if (window.mouseDown && evt.button === 0) {
+            maze.toggleCellValue(cellCoords.x, cellCoords.y);
+            refreshEditorGrid();
+        }
+    });
+
+    cellDiv.addEventListener('mouseout', (evt) => {
+        cellDiv.classList.remove('cellHover');
+    });
+}
+
+function buildCellTypeSelector() {
+    const containerDiv = document.getElementById('cell_type_selector_container');
+    let divElement, inputElement, labelElement;
+    Object.keys(mazeCellTypes).forEach((cellType, idx) => {
+        divElement = document.createElement('div');
+        containerDiv.appendChild(divElement);
+
+        // Create the input for this cell type
+        inputElement = document.createElement('input');
+        inputElement.setAttribute('type', 'radio');
+        inputElement.setAttribute('name', 'cell_type');
+        inputElement.setAttribute('id', cellType);
+        inputElement.setAttribute('value', cellType);
+        if (idx === 0){
+            // Set the default checked value
+            inputElement.setAttribute('checked', 'true');
+            currentCellType = cellType;
+        }
+        divElement.appendChild(inputElement);
+
+        // Create the label for this cell type
+        labelElement = document.createElement('label');
+        labelElement.setAttribute('for', cellType);
+        labelElement.innerHTML = mazeCellTypes[cellType].label;
+        divElement.appendChild(labelElement);
+    });
+}
+
+function getCellCoords(cellDiv) {
+    // The cellId is in the form of "row-column"
+    const idStr = cellDiv.getAttribute('id');
+    const values = idStr.split('-');
+
+    const row = Number(values[0]);
+    const col = Number(values[1]);
+
+    return { x: col, y: row };
 }
