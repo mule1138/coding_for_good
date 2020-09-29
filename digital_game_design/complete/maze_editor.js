@@ -86,19 +86,19 @@ function refreshEditorGrid() {
 function attachCellEvents(cellDiv) {
     const cellCoords = getCellCoords(cellDiv);
 
-    cellDiv.addEventListener('click', (evt) => {
+    cellDiv.addEventListener('mousedown', (evt) => {
         console.log(`cell clicked: ${cellCoords.row}, ${cellCoords.col}`);
 
         maze.setCellType(cellCoords.row, cellCoords.col, currentCellType);
         refreshEditorGrid();
     });
 
-    cellDiv.addEventListener('mouseover', (evt) => {
+    cellDiv.addEventListener('mouseenter', (evt) => {
         cellDiv.classList.add('cellHover');
-        // if (window.mouseDown && evt.button === 0) {
-        //     maze.toggleCellValue(cellCoords.row, cellCoords.col);
-        //     refreshEditorGrid();
-        // }
+        if (window.mouseDown && evt.button === 0) {
+            maze.setCellType(cellCoords.row, cellCoords.col, currentCellType);
+            refreshEditorGrid();
+        }
     });
 
     cellDiv.addEventListener('mouseout', (evt) => {
