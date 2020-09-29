@@ -41,7 +41,7 @@ export const mazeCellTypes = {
  * manipulate the Maze state.
  */
 export class Maze {
-    constructor(width, height, startCell, endCell, cells) {
+    constructor(width, height, cells) {
         if (!width || !height) {
             throw new Error(`width and height must have values`);
         }
@@ -80,20 +80,20 @@ export class Maze {
         return JSON.stringify(mazeObj);
     }
 
-    getCellType(x, y) {
-        const rowStartIdx = x * this.width;
-        const cellIdx = rowStartIdx + y;
+    getCellType(row, col) {
+        const rowStartIdx = row * this.width;
+        const cellIdx = rowStartIdx + col;
         return this.cells[cellIdx];
     }
 
-    setCellType(x, y, cellType) {
+    setCellType(row, col, cellType) {
         if (cellType === 'start') {
-            this.setStartCell(x, y);
+            this.setStartCell(row, col);
         } else if (cellType === 'end') {
-            this.setEndCell(x, y);
+            this.setEndCell(row, col);
         } else {
-            const rowStartIdx = x * this.width;
-            const cellIdx = rowStartIdx + y;
+            const rowStartIdx = row * this.width;
+            const cellIdx = rowStartIdx + col;
             this.cells[cellIdx] = cellType;
         }
     }
@@ -102,9 +102,9 @@ export class Maze {
         let startCell = null;
         this.cells.some((cell, idx) => {
             if (cell === 'start') {
-                const y = Math.floor(idx / this.width);
-                const x = idx - (y * this.width);
-                startCell = { x: x, y: y };
+                const row = Math.floor(idx / this.width);
+                const col = idx - (row * this.width);
+                startCell = { row: row, col: col };
                 return true;
             }
 
@@ -114,11 +114,11 @@ export class Maze {
         return startCell;
     }
 
-    setStartCell(x, y) {
+    setStartCell(row, col) {
         // First find and clear the exising start cell
-        this.cells.some(cell => {
+        this.cells.some((cell, idx) => {
             if (cell === 'start') {
-                cell = 'path';
+                this.cells[idx] = 'path';
                 return true;
             }
 
@@ -126,7 +126,8 @@ export class Maze {
         });
 
         // Then set the start cell to the new cell
-        const cellIdx = y * this.width + x;
+        const rowStartIdx = row * this.width;
+        const cellIdx = rowStartIdx + col;
         this.cells[cellIdx] = 'start';
     }
 
@@ -134,9 +135,9 @@ export class Maze {
         let endCell = null;
         this.cells.some((cell, idx) => {
             if (cell === 'end') {
-                const y = Math.floor(idx / this.width);
-                const x = idx - (y * this.width);
-                endCell = { x: x, y: y };
+                const row = Math.floor(idx / this.width);
+                const col = idx - (row * this.width);
+                endCell = { row: row, col: col };
                 return true;
             }
 
@@ -146,11 +147,11 @@ export class Maze {
         return endCell;
     }
 
-    setEndCell(x, y) {
+    setEndCell(row, col) {
         // First find and clear the exising end cell
-        this.cells.some(cell => {
+        this.cells.some((cell, idx) => {
             if (cell === 'end') {
-                cell = 'path';
+                this.cells[idx] = 'path';
                 return true;
             }
 
@@ -158,7 +159,8 @@ export class Maze {
         });
 
         // Then set the end cell to the new cell
-        const cellIdx = y * this.width + x;
+        const rowStartIdx = row * this.width;
+        const cellIdx = rowStartIdx + col;
         this.cells[cellIdx] = 'end';
     }
 }

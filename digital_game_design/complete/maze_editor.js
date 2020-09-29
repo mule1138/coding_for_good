@@ -73,7 +73,7 @@ function refreshEditorGrid() {
             attachCellEvents(cellDiv);
 
             // Set the cell specifics
-            cellType = mazeCellTypes[maze.getCellType(col, row)];
+            cellType = mazeCellTypes[maze.getCellType(row, col)];
             cellDiv.classList.add(cellType.class);
             cellDiv.setAttribute('data-is-path', cellType.isPath);
 
@@ -87,17 +87,18 @@ function attachCellEvents(cellDiv) {
     const cellCoords = getCellCoords(cellDiv);
 
     cellDiv.addEventListener('click', (evt) => {
-        maze.toggleCellValue(cellCoords.x, cellCoords.y);
+        console.log(`cell clicked: ${cellCoords.row}, ${cellCoords.col}`);
+
+        maze.setCellType(cellCoords.row, cellCoords.col, currentCellType);
         refreshEditorGrid();
     });
 
     cellDiv.addEventListener('mouseover', (evt) => {
         cellDiv.classList.add('cellHover');
-        console.log(evt);
-        if (window.mouseDown && evt.button === 0) {
-            maze.toggleCellValue(cellCoords.x, cellCoords.y);
-            refreshEditorGrid();
-        }
+        // if (window.mouseDown && evt.button === 0) {
+        //     maze.toggleCellValue(cellCoords.row, cellCoords.col);
+        //     refreshEditorGrid();
+        // }
     });
 
     cellDiv.addEventListener('mouseout', (evt) => {
@@ -118,6 +119,10 @@ function buildCellTypeSelector() {
         inputElement.setAttribute('name', 'cell_type');
         inputElement.setAttribute('id', cellType);
         inputElement.setAttribute('value', cellType);
+        inputElement.addEventListener('change', (evt) => {
+            currentCellType = cellType;
+            console.log(`currentCellType changed to ${currentCellType}`);
+        });
         if (idx === 0){
             // Set the default checked value
             inputElement.setAttribute('checked', 'true');
@@ -141,5 +146,5 @@ function getCellCoords(cellDiv) {
     const row = Number(values[0]);
     const col = Number(values[1]);
 
-    return { x: col, y: row };
+    return { row: row, col: col };
 }
