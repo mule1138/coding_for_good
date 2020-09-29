@@ -6,27 +6,7 @@
     </title>
     <link rel="stylesheet" href="../common/main.css">
 
-    <script type="module" src="maze.js">
-        const DEFAULT_WIDTH = 20;
-        const DEFAULT_HEIGHT = 20;
-
-        function loadMaze() {
-            let maze = null;
-            const mazeJSON = localStorage.getItem('maze');
-            if (mazeJSON) {
-                maze = Maze.fromJSON(mazeJSON);
-            }
-
-            return maze;
-        }
-
-        function saveMaze() {
-            const maze = createMazeFromEditorTable();
-            const mazeJSON = maze.toJSON();
-            localStorage.setItem('maze', mazeJSON);
-        }
-
-    </script>
+    <script type="module" src="maze.js"></script>
 
 </head>
 
@@ -36,24 +16,24 @@
         <tr>
             <td width="300px">
                 <div class="label">Dimentions:</div>
-                <div>
-                    Width: <input id="width_input" type="number">
-                </div>
-                <div>
-                    Height: <input id="height_input" type="number">
-                </div>
+                <div style="display: grid; grid-template-columns: 60px 100px;">
+                    <div>Width:</div>
+                    <div><input id="width_input" type="number" style="width: 75px;"></div>
+                    <div>Height:</div>
+                    <div><input id="height_input" type="number" style="width: 75px;"></div>
             </td>
             <td>
                 <div id="cell_type_selector_container"></div>
             </td>
             <td style="text-align: right;">
+                <input id="new_button" type="button" value="New Maze"><br />
+                <input id="load_button" type="button" value="Load Maze"><br />
                 <input id="save_button" type="button" value="Save Maze">
             </td>
         </tr>
     </table>
     <hr noshade="true" />
     <div id='editor_container' class="editorContainer"></div>
-    <!--input id="load_button" type="button" value="Load Maze"-->
 
     <script type="module" src="./maze_editor.js"></script>
 
