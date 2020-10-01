@@ -6,12 +6,10 @@
     </title>
     <link rel="stylesheet" href="../common/main.css">
 
-    <script type="module" src="maze.js"></script>
-
 </head>
 
 <body>
-    <h1>Maze Editor</h1>
+    <div style="font-weight: bold; font-size: x-large;">Maze Editor</div>
     <table style="width: 100%;">
         <tr>
             <td width="300px">
@@ -25,10 +23,12 @@
             <td>
                 <div id="cell_type_selector_container"></div>
             </td>
-            <td style="text-align: right;">
-                <input id="new_button" type="button" value="New Maze"><br /><br />
-                <input id="load_button" type="button" value="Load Maze"><br /><br />
-                <input id="save_button" type="button" value="Save Maze">
+            <td style="width: 110px;">
+                <div class="fileButtonGroup">
+                    <button class="fileButton" id="new_button">New Maze</button>
+                    <button class="fileButton" id="load_button">Load Maze</button>
+                    <button class="fileButton" id="save_button">Save Maze</button>
+                </div>
             </td>
         </tr>
     </table>
@@ -36,7 +36,6 @@
     <div id='editor_container' class="editorContainer"></div>
 
     <script type="module" src="./maze_editor.js"></script>
-
 </body>
 
 </html>

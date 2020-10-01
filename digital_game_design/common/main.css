@@ -4,6 +4,21 @@ body {
     margin-left: 20px;
 }
 
+.fileButtonGroup .fileButton {
+    border-radius: 8px;
+    width: 100px;
+    height: 33px;
+    margin: 3px;
+    background-color: white;
+    border: 1px solid gray;
+    cursor: pointer;
+    display: block;
+}
+.fileButtonGroup .fileButton:active {
+    background-color: darkgray;
+    color: white;
+}
+
 .label {
     font-size: large;
     font-weight: bold;
@@ -45,12 +60,15 @@ body {
 .mazeWall {
     background-color: black;
 }
+
 .mazePath {
     background-color: white;
 }
+
 .mazeStart {
     background-color: lightgreen;
 }
+
 .mazeEnd {
     background-color: red;
 }

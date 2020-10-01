@@ -24,14 +24,44 @@ function init() {
     // Draw the editor grid
     refreshEditorGrid();
 
+    // Set events on the buttons
+    document.getElementById('new_button').addEventListener('click', () => {
+        const confirmed = confirm('Do you want to delete the current maze and make a new one?');
+        if (confirmed) {
+            maze = newMaze();
+            refreshEditorGrid();
+        }
+    });
+    document.getElementById('load_button').addEventListener('click', () => {
+        const confirmed = confirm('Do you want load the saved maze? Unsaved changes will be lost.');
+        if (confirmed) {
+            const tmpMaze = loadMaze()
+            if (tmpMaze) {
+                maze = tmpMaze;
+                refreshEditorGrid();
+            } else {
+                alert('There is no saved maze to load.');
+            }
+        }
+    });
+    document.getElementById('save_button').addEventListener('click', () => {
+        saveMaze();
+    });
+
     // Set flag for when a mouse button is down
     window.mouseDown = false
-    document.onmousedown = function() {
+    document.onmousedown = function () {
         window.mouseDown = true;
     }
-    document.onmouseup = function() {
+    document.onmouseup = function () {
         window.mouseDown = false;
     }
+}
+
+function newMaze() {
+    const width = document.getElementById('width_input').value;
+    const height = document.getElementById('height_input').value;
+    return new Maze(width, height);
 }
 
 function loadMaze() {
@@ -44,9 +74,20 @@ function loadMaze() {
     return tmpMaze;
 }
 
-function saveMaze(editorTable) {
-    const mazeJSON = maze.toJSON();
-    localStorage.setItem('maze', mazeJSON);
+function saveMaze() {
+    try {
+        const mazeJSON = maze.toJSON();
+        localStorage.setItem('maze', mazeJSON);
+        alert('Maze saved.');
+    } catch (exception) {
+        if (exception instanceof TypeError) {
+            alert('Could not convert Maze to JSON.');
+        } else {
+            alert('Could not save maze to local storage.');
+        }
+
+        console.log(exception);
+    }
 }
 
 function refreshEditorGrid() {
@@ -123,7 +164,8 @@ function buildCellTypeSelector() {
             currentCellType = cellType;
             console.log(`currentCellType changed to ${currentCellType}`);
         });
-        if (idx === 0){
+
+        if (idx === 0) {
             // Set the default checked value
             inputElement.setAttribute('checked', 'true');
             currentCellType = cellType;
