@@ -23,12 +23,27 @@
             <td>
                 <div id="cell_type_selector_container"></div>
             </td>
-            <td style="width: 110px;">
-                <div class="fileButtonGroup">
-                    <button class="fileButton" id="new_button">New Maze</button>
-                    <button class="fileButton" id="load_button">Load Maze</button>
-                    <button class="fileButton" id="save_button">Save Maze</button>
-                </div>
+            <td style="width: 200px;">
+                <table>
+                    <tr>
+                        <td>
+                            <button class="button fileButton" id="new_button">New Maze</button>
+                        </td>
+                        <td rowspan="3">
+                            <button class="button" id="play_button" style="width: 100px; height: 100px;;">Play!</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="button fileButton" id="load_button">Load Maze</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="button fileButton" id="save_button">Save Maze</button>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>
