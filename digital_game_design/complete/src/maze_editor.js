@@ -1,4 +1,5 @@
 import { Maze, mazeCellTypes } from './maze.js';
+import FileManager from './file_manager.js';
 
 const DEFAULT_WIDTH = 20;
 const DEFAULT_HEIGHT = 20;
@@ -9,7 +10,7 @@ init();
 
 function init() {
     console.log("ran init()");
-    maze = loadMaze();
+    maze = FileManager.loadMaze();
     if (!maze) {
         maze = new Maze(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
@@ -35,7 +36,7 @@ function init() {
     document.getElementById('load_button').addEventListener('click', () => {
         const confirmed = confirm('Do you want load the saved maze? Unsaved changes will be lost.');
         if (confirmed) {
-            const tmpMaze = loadMaze()
+            const tmpMaze = FileManager.loadMaze()
             if (tmpMaze) {
                 maze = tmpMaze;
                 refreshEditorGrid();
@@ -45,7 +46,7 @@ function init() {
         }
     });
     document.getElementById('save_button').addEventListener('click', () => {
-        saveMaze();
+        FileManager.saveMaze(maze);
     });
 
     // Set flag for when a mouse button is down
@@ -64,31 +65,6 @@ function newMaze() {
     return new Maze(width, height);
 }
 
-function loadMaze() {
-    let tmpMaze = null;
-    const mazeJSON = localStorage.getItem('maze');
-    if (mazeJSON) {
-        tmpMaze = Maze.fromJSON(mazeJSON);
-    }
-
-    return tmpMaze;
-}
-
-function saveMaze() {
-    try {
-        const mazeJSON = maze.toJSON();
-        localStorage.setItem('maze', mazeJSON);
-        alert('Maze saved.');
-    } catch (exception) {
-        if (exception instanceof TypeError) {
-            alert('Could not convert Maze to JSON.');
-        } else {
-            alert('Could not save maze to local storage.');
-        }
-
-        console.log(exception);
-    }
-}
 
 function refreshEditorGrid() {
     // Clear the container
