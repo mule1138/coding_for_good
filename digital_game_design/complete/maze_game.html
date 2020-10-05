@@ -1,0 +1,44 @@
+<html>
+
+<head>
+    <title>
+        Maze Game
+    </title>
+
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/game.css">
+
+</head>
+
+<body>
+    <table class="container-table">
+        <tr class="header-row">
+            <td>
+                <div style="font-weight: bold; font-size: x-large;">Maze Editor</div>
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            <span class="label">Timer:</span>
+                            <span class="timer" id="timer">00:00:00</span>
+                        </td>
+                        <td style="width: 200px; text-align: right;">
+                            <button class="button" id="edit_button" style="width: 100px; height: 100px;;">Edit
+                                Maze</button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="game-container">
+                    <canvas class="maze-canvas" id="maze-canvas"></canvas>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <script type="module" src="./src/maze_game.js"></script>
+</body>
+
+</html>
