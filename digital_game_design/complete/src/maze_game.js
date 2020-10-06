@@ -40,13 +40,21 @@ function init() {
         renderer = new Renderer_2D(maze, canvas);
 
         // Start the player in the starting cell
-        // playerState.position = maze.getStartCell();
+        initPlayerState();
 
         // Start the game loop (30fps)
         gameLoopInterval = setInterval(gameLoop, 1000 / FRAMES_PER_SECOND);
     }
 
     console.log("Maze game initialized");
+}
+
+function initPlayerState() {
+    const startCell = maze.getStartCell();
+    const startCellBBox = maze.getCellBoundingBox(startCell.row, startCell.col);
+    playerState.position.x = Math.floor((startCellBBox.right - startCellBBox.left) / 2);
+    playerState.position.y = Math.floor((startCellBBox.bottom - startCellBBox.top) / 2);
+    playerState.heading = 0;
 }
 
 function initEvents() {
@@ -68,7 +76,6 @@ function initEvents() {
 
 function handleButtonEvent(key, isDown) {
     // console.log(`${key} is ${isDown ? 'down' : 'up'}`);
-
     switch (key) {
         case 'Up':
         case 'ArrowUp':
@@ -95,5 +102,5 @@ function gameLoop() {
     // updatePlayer();
     // updateMaze();
 
-    renderer.render();
+    renderer.render(playerState);
 }
