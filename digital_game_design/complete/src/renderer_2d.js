@@ -25,18 +25,21 @@ export default class Renderer_2D {
             y: Math.floor(this.canvas.clientHeight / 2)
         }
 
-        console.log(`canvas center = { x: ${canvasCenter.x}, Y: ${canvasCenter.y} }`);
-
         // Draw Background
+        this.drawBackground(canvasCenter);
+    }
+
+    drawBackground(canvasCenter) {
         const r1 = Math.max(canvasCenter.x, canvasCenter.y)
         const r0 = 0.1 * r1;
-        const bgRadialGradient = this.ctx.createRadialGradient(canvasCenter.x, canvasCenter.y, r0, canvasCenter.x, canvasCenter.y, r1);
+        const bgRadialGradient = this.ctx.createRadialGradient(
+            canvasCenter.x, canvasCenter.y, r0,
+            canvasCenter.x, canvasCenter.y, r1);
         bgRadialGradient.addColorStop(0.0, 'royalblue');
         bgRadialGradient.addColorStop(1.0, 'lightblue');
         this.ctx.fillStyle = bgRadialGradient;
         this.ctx.fillRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
     }
-
 };
 
 
