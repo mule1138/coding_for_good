@@ -59,10 +59,10 @@ export default class Renderer_2D {
         const mazeWidthInUnits = cellDims.width * this.maze.width;
         const mazeHeightInUnits = cellDims.height * this.maze.height;
         this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, 0, mazeWidthInUnits + 4, mazeHeightInUnits + 4);
+        this.ctx.fillRect(0, 0, mazeWidthInUnits + 8, mazeHeightInUnits + 8);
         this.ctx.fillStyle = 'gray';
-        this.ctx.fillRect(1, 1, mazeWidthInUnits + 2, mazeHeightInUnits + 2);
-        this.ctx.translate(2, 2);
+        this.ctx.fillRect(2, 2, mazeWidthInUnits + 4, mazeHeightInUnits + 4);
+        this.ctx.translate(4, 4);
 
         let cellType = null;
         let bbox = null;
