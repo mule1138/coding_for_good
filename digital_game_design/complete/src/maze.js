@@ -6,6 +6,12 @@
 
 
 /**
+ * The default dimensions of each cell in non-descript units.
+ */
+const DEFAULT_CELL_WIDTH_UNITS = 32;
+const DEFAULT_CELL_HEIGHT_UNITS = 32;
+
+/**
  * This object defines the types of cells the maze can be composed of.
  */
 export const mazeCellTypes = {
@@ -41,7 +47,7 @@ export const mazeCellTypes = {
  * manipulate the Maze state.
  */
 export class Maze {
-    constructor(width, height, cells) {
+    constructor(width, height, cells, cellWidth, cellHeight) {
         if (!width || !height) {
             throw new Error(`width and height must have values`);
         }
@@ -49,6 +55,13 @@ export class Maze {
         this.width = width;
         this.height = height;
         this.cells = cells;
+
+        // Cell dimensions in units. Can be used for player position, and as
+        // pixel count durning rendering.
+        this.cellDimensions = {
+            width: cellWidth || DEFAULT_CELL_WIDTH_UNITS,
+            height: cellHeight || DEFAULT_CELL_HEIGHT_UNITS
+        }
 
         if (!this.cells) {
             this.cells = new Array();
@@ -67,13 +80,14 @@ export class Maze {
             mazeObj = mazeJSON;
         }
 
-        return new Maze(mazeObj.width, mazeObj.height, mazeObj.cells);
+        return new Maze(mazeObj.width, mazeObj.height, mazeObj.cells, mazeObj.cellDimensions.width, mazeObj.cellDimensions.height);
     }
 
     toJSON() {
         let mazeObj = {
             width: this.width,
             height: this.height,
+            cellDimensions: this.cellDimensions,
             cells: this.cells
         }
 
@@ -162,6 +176,15 @@ export class Maze {
         const rowStartIdx = row * this.width;
         const cellIdx = rowStartIdx + col;
         this.cells[cellIdx] = 'end';
+    }
+
+    getCellDimensions() {
+        return this.cellDimensions;
+    }
+
+    setCellDimensions(width, height) {
+        this.cellDimensions.width = width;
+        this.cellDimensions.height = height;
     }
 }
 
