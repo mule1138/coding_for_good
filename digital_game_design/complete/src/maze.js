@@ -19,24 +19,28 @@ export const mazeCellTypes = {
         value: 0,
         label: 'Wall',
         class: 'mazeWall',
+        bgColor: 'black',
         isPath: false
     },
     path: {
         value: 1,
         label: 'Path',
         class: 'mazePath',
+        bgColor: 'white',
         isPath: true
     },
     start: {
         value: 2,
         label: 'Start',
         class: 'mazeStart',
+        bgColor: 'lightgreen',
         isPath: true
     },
     end: {
         value: 3,
         label: 'End',
         class: 'mazeEnd',
+        bgColor: 'red',
         isPath: true
     }
 }
@@ -185,6 +189,24 @@ export class Maze {
     setCellDimensions(width, height) {
         this.cellDimensions.width = width;
         this.cellDimensions.height = height;
+    }
+
+    getCellBoundingBox(row, col) {
+        const bbox = {};
+        bbox['left'] = col * this.cellDimensions.width;
+        bbox['top'] = row * this.cellDimensions.height;
+        bbox['right'] = bbox.left + this.cellDimensions.width;
+        bbox['bottom'] = bbox.top + this.cellDimensions.height;
+
+        return bbox;
+    }
+
+    getCellFromXYUnits(x, y) {
+        const cell = {};
+        cell['row'] = Math.floor(y / this.cellDimensions.height);
+        cell['col'] = Math.floor(x / this.cellDimensions.width);
+
+        return cell;
     }
 }
 
