@@ -84,7 +84,12 @@ export class Maze {
             mazeObj = mazeJSON;
         }
 
-        return new Maze(mazeObj.width, mazeObj.height, mazeObj.cells, mazeObj.cellDimensions.width, mazeObj.cellDimensions.height);
+        return new Maze(
+            mazeObj.width,
+            mazeObj.height,
+            mazeObj.cells,
+            mazeObj.cellDimensions.width,
+            mazeObj.cellDimensions.height);
     }
 
     toJSON() {

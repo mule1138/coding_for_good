@@ -4,20 +4,23 @@ import Renderer_2D from './renderer_2d.js';
 
 
 const FRAMES_PER_SECOND = 30;
+const PLAYER_SPEED = 5; // units per frame
 
 let maze = null;
 let gameLoopInterval = null;
 
-const buttonState = {
-    up: false,
-    down: false,
-    left: false,
-    right: false
-}
-
-const playerState = {
-    position: {x: 0, y: 0},
-    heading: 0
+const gameState = {
+    buttons: {
+        up: false,
+        down: false,
+        left: false,
+        right: false
+    },
+    player: {
+        position: { x: 0, y: 0 },
+        heading: 0,
+        size: { width: 1, height: 1 }
+    }
 }
 
 let renderer = null;
@@ -52,9 +55,13 @@ function init() {
 function initPlayerState() {
     const startCell = maze.getStartCell();
     const startCellBBox = maze.getCellBoundingBox(startCell.row, startCell.col);
-    playerState.position.x = Math.floor((startCellBBox.right - startCellBBox.left) / 2);
-    playerState.position.y = Math.floor((startCellBBox.bottom - startCellBBox.top) / 2);
-    playerState.heading = 0;
+    gameState.player.position.x = startCellBBox.left + Math.floor((startCellBBox.right - startCellBBox.left) / 2);
+    gameState.player.position.y = startCellBBox.top + Math.floor((startCellBBox.bottom - startCellBBox.top) / 2);
+    gameState.player.heading = 0;
+
+    const cellDims = maze.getCellDimensions();
+    gameState.player.size.width = cellDims.width;
+    gameState.player.size.height = cellDims.height;
 }
 
 function initEvents() {
@@ -69,7 +76,6 @@ function initEvents() {
     });
 
     document.addEventListener('keyup', (evt) => {
-        evt.buttonState
         handleButtonEvent (evt.key, false);
     });
 }
@@ -79,19 +85,19 @@ function handleButtonEvent(key, isDown) {
     switch (key) {
         case 'Up':
         case 'ArrowUp':
-            buttonState.up = isDown;
+            gameState.buttons.up = isDown;
             break;
         case 'Down':
         case 'ArrowDown':
-            buttonState.down = isDown;
+            gameState.buttons.down = isDown;
             break;
         case 'Left':
         case 'ArrowLeft':
-            buttonState.left = isDown;
+            gameState.buttons.left = isDown;
             break;
         case 'Right':
         case 'ArrowRight':
-            buttonState.right = isDown;
+            gameState.buttons.right = isDown;
             break;
         default:
             break;
@@ -99,8 +105,27 @@ function handleButtonEvent(key, isDown) {
 }
 
 function gameLoop() {
-    // updatePlayer();
-    // updateMaze();
+    updatePlayer();
+    // Update other state as it comes up
 
-    renderer.render(playerState);
+    renderer.render(gameState);
+}
+
+function updatePlayer() {
+    // Move the player based on what arrow buttons are pressed
+    if (gameState.buttons.up) {
+        gameState.player.position.y - PLAYER_SPEED;
+    }
+    if (gameState.buttons.down) {
+        gameState.player.position.y + PLAYER_SPEED;
+    }
+    if (gameState.buttons.left) {
+        gameState.player.position.x - PLAYER_SPEED;
+    }
+    if (gameState.buttons.right) {
+        gameState.player.position.x + PLAYER_SPEED;
+    }
+
+    // Check to make sure the new position is possible
+
 }

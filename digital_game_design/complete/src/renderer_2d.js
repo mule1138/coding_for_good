@@ -1,9 +1,9 @@
 import { mazeCellTypes } from './maze.js';
 
 const playerSprite = {
-    bbox: {
-        height: 0,
-        width: 0
+    sizeScale: {
+        height: 0.9,
+        width: 0.9
     },
     color: 'royalblue'
 }
@@ -13,14 +13,9 @@ export default class Renderer_2D {
         this.maze = maze;
         this.canvas = canvasElement;
         this.ctx = this.canvas.getContext('2d');
-
-        // Calculate the size of the character sprite
-        const cellDims = maze.getCellDimensions();
-        playerSprite.bbox.height = Math.floor(cellDims.height * 0.9);
-        playerSprite.bbox.width = Math.floor(cellDims.width * 0.9);
     }
 
-    render(playerState) {
+    render(gameState) {
         const canvasCenter = {
             x: Math.floor(this.canvas.clientWidth / 2),
             y: Math.floor(this.canvas.clientHeight / 2)
@@ -32,12 +27,14 @@ export default class Renderer_2D {
         // Draw Background
         this.drawBackground(canvasCenter);
 
-        // Draw the maze
         this.ctx.save();
-        this.drawMaze();
+
+        // Draw the maze
+        this.drawMaze(gameState);
 
         // Draw the player
-        this.drawPlayer(playerState);
+        this.drawPlayer(gameState);
+
         this.ctx.restore();
     }
 
@@ -53,7 +50,9 @@ export default class Renderer_2D {
         this.ctx.fillRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
     }
 
-    drawMaze() {
+    drawMaze(gameState) {
+        // this.ctx.scale(2, 2);
+
         // Draw a 2px border around the maze
         const cellDims = this.maze.getCellDimensions();
         const mazeWidthInUnits = cellDims.width * this.maze.width;
@@ -77,8 +76,36 @@ export default class Renderer_2D {
         }
     }
 
-    drawPlayer(playerState) {
-        // this.ctx.fillthis.playerSprite
+    drawPlayer(gameState) {
+        const centerPt = gameState.player.position;
+        const playerSize = {};
+        playerSize['width'] = playerSprite.sizeScale.width * gameState.player.size.width;
+        playerSize['height'] = playerSprite.sizeScale.width * gameState.player.size.width;
+
+        this.ctx.save();
+
+        // Rotate the context around the center of the player sprite
+        this.ctx.translate(centerPt.x, centerPt.y);
+        this.ctx.rotate(this.degToRad(gameState.player.heading));
+        this.ctx.translate(-centerPt.x, -centerPt.y);
+
+        // Create the sprite path
+        this.ctx.beginPath();
+        this.ctx.moveTo(centerPt.x, centerPt.y - (playerSize.width / 2));
+        this.ctx.arc(centerPt.x, centerPt.y, playerSize.width / 2, this.degToRad(10), this.degToRad(170), false);
+        this.ctx.closePath();
+
+        // Fill it and outline it
+        this.ctx.fillStyle = playerSprite.color;
+        this.ctx.fill();
+        this.ctx.strokeStyle = 'black';
+        this.ctx.stroke();
+
+        this.ctx.restore();
+    }
+
+    degToRad(degrees) {
+        return (Math.PI / 180) * degrees;
     }
 };
 
