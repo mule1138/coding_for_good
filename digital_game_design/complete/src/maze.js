@@ -207,9 +207,18 @@ export class Maze {
     }
 
     getCellFromXYUnits(x, y) {
-        const cell = {};
-        cell['row'] = Math.floor(y / this.cellDimensions.height);
-        cell['col'] = Math.floor(x / this.cellDimensions.width);
+        let cell;
+
+        if (x < 0 || x > this.width * this.cellDimensions.width ||
+            y < 0 || y > this.height * this.cellDimensions.height) {
+            // These coordinates are outside the maze boundaries
+            cell = null;
+        } else {
+            cell = {
+                row: Math.floor(y / this.cellDimensions.height),
+                col: Math.floor(x / this.cellDimensions.width)
+            }
+        }
 
         return cell;
     }

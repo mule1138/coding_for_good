@@ -72,16 +72,17 @@ function initEvents() {
     };
 
     document.addEventListener('keydown', (evt) => {
-        handleButtonEvent (evt.key, true);
+        handleButtonEvent(evt.key, true);
     });
 
     document.addEventListener('keyup', (evt) => {
-        handleButtonEvent (evt.key, false);
+        handleButtonEvent(evt.key, false);
     });
 }
 
 function handleButtonEvent(key, isDown) {
-    // console.log(`${key} is ${isDown ? 'down' : 'up'}`);
+    console.log(`${key} is ${isDown ? 'down' : 'up'}`);
+
     switch (key) {
         case 'Up':
         case 'ArrowUp':
@@ -112,20 +113,114 @@ function gameLoop() {
 }
 
 function updatePlayer() {
+    const playerBBox = calcPlayerBoundingBox();
+    const playerCurPos = { x: gameState.player.position.x, y: gameState.player.position.y };
+
+    let cell1, cell2, currCell, cellBBox, delta;
+
     // Move the player based on what arrow buttons are pressed
     if (gameState.buttons.up) {
-        gameState.player.position.y - PLAYER_SPEED;
+        delta = PLAYER_SPEED;
+
+        cell1 = maze.getCellFromXYUnits(playerBBox.left, playerBBox.top - PLAYER_SPEED);
+        cell2 = maze.getCellFromXYUnits(playerBBox.right, playerBBox.top - PLAYER_SPEED);
+        if (cell1 === null ||
+            mazeCellTypes[maze.getCellType(cell1.row, cell1.col)].isPath === false ||
+            mazeCellTypes[maze.getCellType(cell2.row, cell2.col)].isPath === false) {
+            // Limmit movement to top of current cell
+            currCell = maze.getCellFromXYUnits(playerCurPos.x, playerCurPos.y);
+            cellBBox = maze.getCellBoundingBox(currCell.row, currCell.col);
+            delta = playerBBox.top - cellBBox.top - 1;
+        }
+
+        gameState.player.position.y -= delta;
     }
     if (gameState.buttons.down) {
-        gameState.player.position.y + PLAYER_SPEED;
+        delta = PLAYER_SPEED;
+
+        cell1 = maze.getCellFromXYUnits(playerBBox.left, playerBBox.bottom + PLAYER_SPEED);
+        cell2 = maze.getCellFromXYUnits(playerBBox.right, playerBBox.bottom + PLAYER_SPEED);
+        if (cell1 === null ||
+            mazeCellTypes[maze.getCellType(cell1.row, cell1.col)].isPath === false ||
+            mazeCellTypes[maze.getCellType(cell2.row, cell2.col)].isPath === false) {
+            // Limmit movement to bottom of current cell
+            currCell = maze.getCellFromXYUnits(playerCurPos.x, playerCurPos.y);
+            cellBBox = maze.getCellBoundingBox(currCell.row, currCell.col);
+            delta = cellBBox.bottom - playerBBox.bottom - 1;
+        }
+
+        gameState.player.position.y += delta;
     }
     if (gameState.buttons.left) {
-        gameState.player.position.x - PLAYER_SPEED;
+        delta = PLAYER_SPEED;
+
+        cell1 = maze.getCellFromXYUnits(playerBBox.left - PLAYER_SPEED, playerBBox.top);
+        cell2 = maze.getCellFromXYUnits(playerBBox.left - PLAYER_SPEED, playerBBox.bottom);
+        if (cell1 === null ||
+            mazeCellTypes[maze.getCellType(cell1.row, cell1.col)].isPath === false ||
+            mazeCellTypes[maze.getCellType(cell2.row, cell2.col)].isPath === false) {
+            // Limmit movement to bottom of current cell
+            currCell = maze.getCellFromXYUnits(playerCurPos.x, playerCurPos.y);
+            cellBBox = maze.getCellBoundingBox(currCell.row, currCell.col);
+            delta = playerBBox.left - cellBBox.left - 1;
+        }
+
+        gameState.player.position.x -= delta;
     }
     if (gameState.buttons.right) {
-        gameState.player.position.x + PLAYER_SPEED;
+        delta = PLAYER_SPEED;
+
+        cell1 = maze.getCellFromXYUnits(playerBBox.right + PLAYER_SPEED, playerBBox.top);
+        cell2 = maze.getCellFromXYUnits(playerBBox.right + PLAYER_SPEED, playerBBox.bottom);
+        if (cell1 === null ||
+            mazeCellTypes[maze.getCellType(cell1.row, cell1.col)].isPath === false ||
+            mazeCellTypes[maze.getCellType(cell2.row, cell2.col)].isPath === false) {
+            // Limmit movement to bottom of current cell
+            currCell = maze.getCellFromXYUnits(playerCurPos.x, playerCurPos.y);
+            cellBBox = maze.getCellBoundingBox(currCell.row, currCell.col);
+            delta = cellBBox.right - playerBBox.right - 1;
+        }
+
+        gameState.player.position.x += delta;
     }
 
-    // Check to make sure the new position is possible
+    // Calculate new heading based on movement
+    const dx = gameState.player.position.x - playerCurPos.x;
+    const dy = playerCurPos.y - gameState.player.position.y;
+    let heading = gameState.player.heading;
+    if (dx === 0) {
+        if (dy > 0) {
+            heading = 0;
+        }
+        else if (dy < 0) {
+            heading = 180;
+        }
+    } else if (dy === 0) {
+        if (dx > 0) {
+            heading = 90;
+        } else {
+            heading = 270;
+        }
+    } else {
+        heading = (180 / Math.PI) * Math.tan(dy / dx);
+    }
 
+    gameState.player.heading = heading;
+}
+
+function calcPlayerBoundingBox() {
+    const bbHeight = Math.floor(gameState.player.size.height * 0.8);
+    const bbWidth = Math.floor(gameState.player.size.width * 0.8);
+
+
+    const top = gameState.player.position.y - Math.floor(bbHeight / 2);
+    const left = gameState.player.position.x - Math.floor(bbWidth / 2);
+    const bbox = {
+        top: top,
+        left: left,
+        bottom: top + bbHeight,
+        right: left + bbWidth
+    };
+
+    return bbox;
 }

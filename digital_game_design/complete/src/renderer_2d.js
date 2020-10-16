@@ -2,8 +2,8 @@ import { mazeCellTypes } from './maze.js';
 
 const playerSprite = {
     sizeScale: {
-        height: 0.9,
-        width: 0.9
+        height: 0.8,
+        width: 0.8
     },
     color: 'royalblue'
 }
@@ -115,6 +115,10 @@ export default class Renderer_2D {
 
     degToRad(degrees) {
         return (Math.PI / 180) * degrees;
+    }
+
+    radToDeg(radians) {
+        return (180 / Math.PI) * radians;
     }
 };
 
