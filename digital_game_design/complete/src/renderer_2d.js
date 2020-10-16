@@ -64,12 +64,21 @@ export default class Renderer_2D {
         this.ctx.translate(4, 4);
 
         let cellType = null;
-        let bbox = null;
+        let bbox = {
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0
+        };
 
         for(let row = 0; row < this.maze.height; ++row) {
+            bbox.top = row * cellDims.height;
+            bbox.bottom = bbox.top + cellDims.height;
+
             for(let col = 0; col < this.maze.width; ++col) {
                 cellType = this.maze.getCellType(row, col);
-                bbox = this.maze.getCellBoundingBox(row, col);
+                bbox.left = col * cellDims.width;
+                bbox.right = bbox.left + cellDims.width;
                 this.ctx.fillStyle = mazeCellTypes[cellType].bgColor;
                 this.ctx.fillRect(bbox.left, bbox.top, bbox.right - bbox.left, bbox.bottom - bbox.top);
             }
