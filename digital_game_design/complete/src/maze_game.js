@@ -185,27 +185,44 @@ function updatePlayer() {
     }
 
     // Calculate new heading based on movement
-    const dx = gameState.player.position.x - playerCurPos.x;
-    const dy = playerCurPos.y - gameState.player.position.y;
-    let heading = gameState.player.heading;
+    const newHeading = calcPlayerHeading(playerCurPos, gameState.player.heading, gameState.player.position);
+    gameState.player.heading = newHeading;
+}
+
+function calcPlayerHeading(currentPos, currentHeading, newPos) {
+    const dx = newPos.x - currentPos.x;
+    const dy = currentPos.y - newPos.y;
+    let heading = currentHeading;
+
     if (dx === 0) {
         if (dy > 0) {
             heading = 0;
         }
         else if (dy < 0) {
             heading = 180;
+        } else {
+            // We don't do anything if both dx and dy are 0
+            // This will keep the heading the same as the last movement
         }
-    } else if (dy === 0) {
-        if (dx > 0) {
+    } else if (dx > 0) {
+        if (dy > 0) {
+            heading = 45;
+        } else if (dy < 0) {
+            heading = 135;
+        } else {
             heading = 90;
+        }
+    } else if (dx < 0) {
+        if (dy > 0) {
+            heading = 315;
+        } else if (dy < 0) {
+            heading = 225;
         } else {
             heading = 270;
         }
-    } else {
-        heading = (180 / Math.PI) * Math.tan(dy / dx);
     }
 
-    gameState.player.heading = heading;
+    return heading;
 }
 
 function calcPlayerBoundingBox() {
