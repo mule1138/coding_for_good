@@ -30,6 +30,7 @@ const gameState = {
 // The renderer object
 let renderer = null;
 
+// Initialze the game!
 init();
 
 function init() {
@@ -111,9 +112,10 @@ function handleButtonEvent(key, isDown) {
 }
 
 function gameLoop() {
+    // Update stuff in the game
     updatePlayer();
-    // Update other state as it comes up
 
+    // Send the updated state to the renderer
     renderer.render(gameState);
 }
 
@@ -240,8 +242,6 @@ function calcPlayerHeading(currentPos, currentHeading, newPos) {
 }
 
 function calcPlayerBoundingBox() {
-    // const bbHeight = Math.floor(gameState.player.size.height * 0.8);
-    // const bbWidth = Math.floor(gameState.player.size.width * 0.8);
     const bbHeight = gameState.player.size.height;
     const bbWidth = gameState.player.size.width;
 
