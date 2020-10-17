@@ -2,8 +2,8 @@ import { mazeCellTypes } from './maze.js';
 
 const playerSprite = {
     sizeScale: {
-        height: 0.8,
-        width: 0.8
+        height: 1.0,
+        width: 1.0
     },
     color: 'royalblue'
 }

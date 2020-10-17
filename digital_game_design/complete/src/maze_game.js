@@ -6,7 +6,11 @@ import Renderer_2D from './renderer_2d.js';
 const FRAMES_PER_SECOND = 30;
 const PLAYER_SPEED = 5; // units per frame
 
+// The Maze
 let maze = null;
+
+// The handle to the game loop interval function. Need this if we want to
+// stop the loop
 let gameLoopInterval = null;
 
 const gameState = {
@@ -23,6 +27,7 @@ const gameState = {
     }
 }
 
+// The renderer object
 let renderer = null;
 
 init();
@@ -60,8 +65,8 @@ function initPlayerState() {
     gameState.player.heading = 0;
 
     const cellDims = maze.getCellDimensions();
-    gameState.player.size.width = cellDims.width;
-    gameState.player.size.height = cellDims.height;
+    gameState.player.size.width = Math.floor(cellDims.width * 0.8);
+    gameState.player.size.height = Math.floor(cellDims.height * 0.8);
 }
 
 function initEvents() {
@@ -235,9 +240,10 @@ function calcPlayerHeading(currentPos, currentHeading, newPos) {
 }
 
 function calcPlayerBoundingBox() {
-    const bbHeight = Math.floor(gameState.player.size.height * 0.8);
-    const bbWidth = Math.floor(gameState.player.size.width * 0.8);
-
+    // const bbHeight = Math.floor(gameState.player.size.height * 0.8);
+    // const bbWidth = Math.floor(gameState.player.size.width * 0.8);
+    const bbHeight = gameState.player.size.height;
+    const bbWidth = gameState.player.size.width;
 
     const top = gameState.player.position.y - Math.floor(bbHeight / 2);
     const left = gameState.player.position.x - Math.floor(bbWidth / 2);
