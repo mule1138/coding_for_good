@@ -104,7 +104,7 @@ function attachCellEvents(cellDiv) {
     const cellCoords = getCellCoords(cellDiv);
 
     cellDiv.addEventListener('mousedown', (evt) => {
-        console.log(`cell clicked: ${cellCoords.row}, ${cellCoords.col}`);
+        // console.log(`cell clicked: ${cellCoords.row}, ${cellCoords.col}`);
 
         maze.setCellType(cellCoords.row, cellCoords.col, currentCellType);
         refreshEditorGrid();
@@ -138,7 +138,7 @@ function buildCellTypeSelector() {
         inputElement.setAttribute('value', cellType);
         inputElement.addEventListener('change', (evt) => {
             currentCellType = cellType;
-            console.log(`currentCellType changed to ${currentCellType}`);
+            // console.log(`currentCellType changed to ${currentCellType}`);
         });
 
         if (idx === 0) {

@@ -81,7 +81,7 @@ function initEvents() {
 }
 
 function handleButtonEvent(key, isDown) {
-    console.log(`${key} is ${isDown ? 'down' : 'up'}`);
+    // console.log(`${key} is ${isDown ? 'down' : 'up'}`);
 
     switch (key) {
         case 'Up':
@@ -113,13 +113,24 @@ function gameLoop() {
 }
 
 function updatePlayer() {
-    const playerBBox = calcPlayerBoundingBox();
+    // Calculate the new player position
     const playerCurPos = { x: gameState.player.position.x, y: gameState.player.position.y };
+    const playerNewPos = calcPlayerPosition(playerCurPos, gameState.buttons);
+    gameState.player.position.x = playerNewPos.x;
+    gameState.player.position.y = playerNewPos.y;
 
+    // Calculate new player heading based on movement
+    const newHeading = calcPlayerHeading(playerCurPos, gameState.player.heading, playerNewPos);
+    gameState.player.heading = newHeading;
+}
+
+function calcPlayerPosition(playerCurPos, buttonStates) {
+    const playerBBox = calcPlayerBoundingBox();
     let cell1, cell2, currCell, cellBBox, delta;
+    const newPos = {x: playerCurPos.x, y: playerCurPos.y};
 
     // Move the player based on what arrow buttons are pressed
-    if (gameState.buttons.up) {
+    if (buttonStates.up) {
         delta = PLAYER_SPEED;
 
         cell1 = maze.getCellFromXYUnits(playerBBox.left, playerBBox.top - PLAYER_SPEED);
@@ -133,9 +144,9 @@ function updatePlayer() {
             delta = playerBBox.top - cellBBox.top - 1;
         }
 
-        gameState.player.position.y -= delta;
+        newPos.y -= delta;
     }
-    if (gameState.buttons.down) {
+    if (buttonStates.down) {
         delta = PLAYER_SPEED;
 
         cell1 = maze.getCellFromXYUnits(playerBBox.left, playerBBox.bottom + PLAYER_SPEED);
@@ -149,9 +160,9 @@ function updatePlayer() {
             delta = cellBBox.bottom - playerBBox.bottom - 1;
         }
 
-        gameState.player.position.y += delta;
+        newPos.y += delta;
     }
-    if (gameState.buttons.left) {
+    if (buttonStates.left) {
         delta = PLAYER_SPEED;
 
         cell1 = maze.getCellFromXYUnits(playerBBox.left - PLAYER_SPEED, playerBBox.top);
@@ -165,9 +176,9 @@ function updatePlayer() {
             delta = playerBBox.left - cellBBox.left - 1;
         }
 
-        gameState.player.position.x -= delta;
+        newPos.x -= delta;
     }
-    if (gameState.buttons.right) {
+    if (buttonStates.right) {
         delta = PLAYER_SPEED;
 
         cell1 = maze.getCellFromXYUnits(playerBBox.right + PLAYER_SPEED, playerBBox.top);
@@ -181,12 +192,10 @@ function updatePlayer() {
             delta = cellBBox.right - playerBBox.right - 1;
         }
 
-        gameState.player.position.x += delta;
+        newPos.x += delta;
     }
 
-    // Calculate new heading based on movement
-    const newHeading = calcPlayerHeading(playerCurPos, gameState.player.heading, gameState.player.position);
-    gameState.player.heading = newHeading;
+    return newPos;
 }
 
 function calcPlayerHeading(currentPos, currentHeading, newPos) {
