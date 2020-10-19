@@ -164,6 +164,7 @@ function updatePlayState(gameState) {
             }
             break;
         case 'done':
+            clearInterval(gameLoopInterval);
             break;
         default:
             break;
