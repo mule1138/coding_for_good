@@ -1,5 +1,5 @@
 import { updatePlayer } from './player_lib.js';
-import FileManager from './file_manager.js';
+import { loadMaze } from './file_lib.js';
 import Renderer_2D from './renderer_2d.js';
 
 
@@ -24,7 +24,9 @@ const gameState = {
         position: { x: 0, y: 0 },
         heading: 0,
         size: { width: 1, height: 1 }
-    }
+    },
+    startTime: null,
+    playState: 'start'
 }
 
 // The renderer object
@@ -37,7 +39,7 @@ init();
  * Function that initializes the game state and kicks off the game loop.
  */
 function init() {
-    maze = FileManager.loadMaze();
+    maze = loadMaze();
     if (!maze) {
         alert('No maze to play. Go to the editor and create a maze.');
     } else {
@@ -55,7 +57,7 @@ function init() {
         initPlayerState();
 
         // Start the game loop (30fps)
-        gameLoopInterval = setInterval(composeFrame, 1000 / FRAMES_PER_SECOND);
+        gameLoopInterval = setInterval(drawFrame, 1000 / FRAMES_PER_SECOND);
     }
 
     console.log("Maze game initialized");
@@ -130,10 +132,77 @@ function handleButtonEvent(key, isDown) {
  * This is the heart of the game. This function is called every iteration to
  * calculate the current state of the game and re-render the screen.
  */
-function composeFrame() {
-    // Update stuff in the game
+function drawFrame() {
+    // Update the state of the game (start, playing, done);
+    updatePlayState(gameState);
+
+    // Update the Timer
+    updateTimer(gameState);
+
+    // Update player state
     updatePlayer(gameState, maze);
 
     // Send the updated state to the renderer
     renderer.render(gameState);
+}
+
+function updatePlayState(gameState) {
+    const currentCell = maze.getCellFromXYUnits(gameState.player.position.x, gameState.player.position.y);
+    const cellType = maze.getCellType(currentCell.row, currentCell.col);
+
+    switch (gameState.playState) {
+        case 'start':
+            // If the player has left the start cell, the game is afoot
+            if (cellType !== 'start') {
+                gameState.playState = 'playing';
+            }
+            break;
+        case 'playing':
+            // If the player has entered the end cell, the game is done
+            if (cellType === 'end') {
+                gameState.playState = 'done';
+            }
+            break;
+        case 'done':
+            break;
+        default:
+            break;
+    }
+}
+
+function updateTimer(gameState) {
+    let timerString = '00:00.000';
+    if (gameState.playState === 'playing') {
+        if (gameState.startTime) {
+            const curTime = new Date();
+            const timeDif = curTime.valueOf() - gameState.startTime.valueOf();
+            const minutes = Math.floor(timeDif / 60000);
+            const seconds = (timeDif - (minutes * 60000)) / 1000;
+
+            let minStr;
+            if (minutes === 0) {
+                minStr = '00';
+            } else if (minutes < 10) {
+                minStr = `0${minutes}`;
+            } else {
+                minStr = `${minutes}`;
+            }
+
+            let secStr;
+            if (seconds === 0) {
+                secStr = '00';
+            } else if (seconds < 10) {
+                secStr = `0${seconds}`;
+            } else {
+                secStr = `${seconds}`;
+            }
+
+            timerString = `${minStr}:${secStr}`;
+        } else {
+            gameState.startTime = new Date();
+        }
+
+        document.getElementById('timer').innerHTML = timerString;
+    }
+
 }

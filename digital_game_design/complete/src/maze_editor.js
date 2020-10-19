@@ -1,5 +1,5 @@
 import { Maze, mazeCellTypes } from './maze.js';
-import FileManager from './file_manager.js';
+import {loadMaze, saveMaze} from './file_lib.js';
 
 const DEFAULT_WIDTH = 20;
 const DEFAULT_HEIGHT = 20;
@@ -10,7 +10,7 @@ init();
 
 function init() {
     console.log("ran init()");
-    maze = FileManager.loadMaze();
+    maze = loadMaze();
     if (!maze) {
         maze = new Maze(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
@@ -36,7 +36,7 @@ function init() {
     document.getElementById('load_button').addEventListener('click', () => {
         const confirmed = confirm('Do you want load the saved maze? Unsaved changes will be lost.');
         if (confirmed) {
-            const tmpMaze = FileManager.loadMaze()
+            const tmpMaze = loadMaze()
             if (tmpMaze) {
                 maze = tmpMaze;
                 refreshEditorGrid();
@@ -46,7 +46,7 @@ function init() {
         }
     });
     document.getElementById('save_button').addEventListener('click', () => {
-        FileManager.saveMaze(maze);
+        saveMaze(maze);
     });
 
     // Set flag for when a mouse button is down

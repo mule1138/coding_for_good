@@ -1,4 +1,5 @@
 import { mazeCellTypes } from './maze.js';
+import { radToDeg, degToRad } from './math_lib.js';
 
 const playerSprite = {
     sizeScale: {
@@ -71,11 +72,11 @@ export default class Renderer_2D {
             right: 0
         };
 
-        for(let row = 0; row < this.maze.height; ++row) {
+        for (let row = 0; row < this.maze.height; ++row) {
             bbox.top = row * cellDims.height;
             bbox.bottom = bbox.top + cellDims.height;
 
-            for(let col = 0; col < this.maze.width; ++col) {
+            for (let col = 0; col < this.maze.width; ++col) {
                 cellType = this.maze.getCellType(row, col);
                 bbox.left = col * cellDims.width;
                 bbox.right = bbox.left + cellDims.width;
@@ -95,13 +96,13 @@ export default class Renderer_2D {
 
         // Rotate the context around the center of the player sprite
         this.ctx.translate(centerPt.x, centerPt.y);
-        this.ctx.rotate(this.degToRad(gameState.player.heading));
+        this.ctx.rotate(degToRad(gameState.player.heading));
         this.ctx.translate(-centerPt.x, -centerPt.y);
 
         // Create the sprite path
         this.ctx.beginPath();
         this.ctx.moveTo(centerPt.x, centerPt.y - (playerSize.width / 2));
-        this.ctx.arc(centerPt.x, centerPt.y, playerSize.width / 2, this.degToRad(10), this.degToRad(170), false);
+        this.ctx.arc(centerPt.x, centerPt.y, playerSize.width / 2, degToRad(10), degToRad(170), false);
         this.ctx.closePath();
 
         // Fill it and outline it
@@ -111,14 +112,6 @@ export default class Renderer_2D {
         this.ctx.stroke();
 
         this.ctx.restore();
-    }
-
-    degToRad(degrees) {
-        return (Math.PI / 180) * degrees;
-    }
-
-    radToDeg(radians) {
-        return (180 / Math.PI) * radians;
     }
 };
 
