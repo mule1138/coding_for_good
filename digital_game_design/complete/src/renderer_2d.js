@@ -1,5 +1,5 @@
 import { mazeCellTypes } from './maze.js';
-import { radToDeg, degToRad } from './math_lib.js';
+import { radToDeg, degToRad } from './libs/math_lib.js';
 
 const playerSprite = {
     sizeScale: {
@@ -28,7 +28,11 @@ export default class Renderer_2D {
         // Draw Background
         this.drawBackground(canvasCenter);
 
+        // Save the current context state prior to drawing
         this.ctx.save();
+
+        // Set the scale if we want to
+        // this.ctx.scale(2, 2);
 
         // Draw the maze
         this.drawMaze(gameState);
@@ -36,6 +40,7 @@ export default class Renderer_2D {
         // Draw the player
         this.drawPlayer(gameState);
 
+        // Restore the context state
         this.ctx.restore();
     }
 
@@ -52,8 +57,6 @@ export default class Renderer_2D {
     }
 
     drawMaze(gameState) {
-        // this.ctx.scale(2, 2);
-
         // Draw a 2px border around the maze
         const cellDims = this.maze.getCellDimensions();
         const mazeWidthInUnits = cellDims.width * this.maze.width;

@@ -1,4 +1,4 @@
-import { Maze } from './maze.js'
+import { Maze } from '../maze.js'
 
 export function loadMaze() {
     let tmpMaze = null;

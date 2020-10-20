@@ -1,4 +1,4 @@
-import { mazeCellTypes } from './maze.js';
+import { mazeCellTypes } from '../maze.js';
 
 export const PLAYER_SPEED = 5; // units the player can move per frame
 

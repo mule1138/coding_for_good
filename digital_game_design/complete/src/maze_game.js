@@ -1,7 +1,7 @@
-import { loadMaze } from './file_lib.js';
-import { updatePlayer } from './player_lib.js';
-import { updateTimer } from './timer_lib.js';
-import { updatePlayState } from './play_state_lib.js';
+import { loadMaze } from './libs/file_lib.js';
+import { updatePlayer } from './libs/player_lib.js';
+import { updateTimer } from './libs/timer_lib.js';
+import { updatePlayState } from './libs/play_state_lib.js';
 import Renderer_2D from './renderer_2d.js';
 
 const FRAMES_PER_SECOND = 30;
@@ -21,6 +21,7 @@ const gameState = {
     },
     maze: null,
     startTime: null,
+    elapsedTime: 0,
     playState: 'start',
     gameLoopInterval: null
 }
@@ -39,7 +40,7 @@ function init() {
     if (!gameState.maze) {
         alert('No maze to play. Go to the editor and create a maze.');
     } else {
-        const canvas = document.getElementById('maze-canvas')
+        const canvas = document.getElementById('maze-canvas');
         canvas.height = canvas.clientHeight;
         canvas.width = canvas.clientWidth;
 
@@ -133,11 +134,38 @@ function drawFrame() {
     updatePlayState(gameState);
 
     // Update the Timer
-    updateTimer(gameState, document.getElementById('timer'));
+    updateTimer(gameState);
 
     // Update player state
     updatePlayer(gameState);
 
-    // Send the updated state to the renderer
+    // Update the UI and render the scene
+    setTimerDisplay(gameState.elapsedTime);
     renderer.render(gameState);
+}
+
+function setTimerDisplay(timeDif) {
+    const minutes = Math.floor(timeDif / 60000);
+    const seconds = (timeDif - (minutes * 60000)) / 1000;
+
+    let minStr;
+    if (minutes === 0) {
+        minStr = '00';
+    } else if (minutes < 10) {
+        minStr = `0${minutes}`;
+    } else {
+        minStr = `${minutes}`;
+    }
+
+    let secStr;
+    if (seconds === 0) {
+        secStr = '00';
+    } else if (seconds < 10) {
+        secStr = `0${seconds}`;
+    } else {
+        secStr = `${seconds}`;
+    }
+
+    const timerString = `${minStr}:${secStr}`;
+    document.getElementById('timer').innerHTML = timerString;
 }
