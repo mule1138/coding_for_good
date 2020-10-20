@@ -1,16 +1,10 @@
-import { updatePlayer } from './player_lib.js';
 import { loadMaze } from './file_lib.js';
+import { updatePlayer } from './player_lib.js';
+import { updateTimer } from './timer_lib.js';
+import { updatePlayState } from './play_state_lib.js';
 import Renderer_2D from './renderer_2d.js';
 
-
 const FRAMES_PER_SECOND = 30;
-
-// The Maze
-let maze = null;
-
-// The handle to the game loop interval function. Need this if we want to
-// stop the loop
-let gameLoopInterval = null;
 
 // The game state.
 const gameState = {
@@ -25,8 +19,10 @@ const gameState = {
         heading: 0,
         size: { width: 1, height: 1 }
     },
+    maze: null,
     startTime: null,
-    playState: 'start'
+    playState: 'start',
+    gameLoopInterval: null
 }
 
 // The renderer object
@@ -39,8 +35,8 @@ init();
  * Function that initializes the game state and kicks off the game loop.
  */
 function init() {
-    maze = loadMaze();
-    if (!maze) {
+    gameState.maze = loadMaze();
+    if (!gameState.maze) {
         alert('No maze to play. Go to the editor and create a maze.');
     } else {
         const canvas = document.getElementById('maze-canvas')
@@ -51,13 +47,13 @@ function init() {
         initEvents();
 
         // create the renderer
-        renderer = new Renderer_2D(maze, canvas);
+        renderer = new Renderer_2D(gameState.maze, canvas);
 
         // Set up the initial player state
         initPlayerState();
 
         // Start the game loop (30fps)
-        gameLoopInterval = setInterval(drawFrame, 1000 / FRAMES_PER_SECOND);
+        gameState.gameLoopInterval = setInterval(drawFrame, 1000 / FRAMES_PER_SECOND);
     }
 
     console.log("Maze game initialized");
@@ -67,13 +63,13 @@ function init() {
  * Function that sets the player's size and initial position
  */
 function initPlayerState() {
-    const startCell = maze.getStartCell();
-    const startCellBBox = maze.getCellBoundingBox(startCell.row, startCell.col);
+    const startCell = gameState.maze.getStartCell();
+    const startCellBBox = gameState.maze.getCellBoundingBox(startCell.row, startCell.col);
     gameState.player.position.x = startCellBBox.left + Math.floor((startCellBBox.right - startCellBBox.left) / 2);
     gameState.player.position.y = startCellBBox.top + Math.floor((startCellBBox.bottom - startCellBBox.top) / 2);
     gameState.player.heading = 0;
 
-    const cellDims = maze.getCellDimensions();
+    const cellDims = gameState.maze.getCellDimensions();
     gameState.player.size.width = Math.floor(cellDims.width * 0.8);
     gameState.player.size.height = Math.floor(cellDims.height * 0.8);
 }
@@ -137,73 +133,11 @@ function drawFrame() {
     updatePlayState(gameState);
 
     // Update the Timer
-    updateTimer(gameState);
+    updateTimer(gameState, document.getElementById('timer'));
 
     // Update player state
-    updatePlayer(gameState, maze);
+    updatePlayer(gameState);
 
     // Send the updated state to the renderer
     renderer.render(gameState);
-}
-
-function updatePlayState(gameState) {
-    const currentCell = maze.getCellFromXYUnits(gameState.player.position.x, gameState.player.position.y);
-    const cellType = maze.getCellType(currentCell.row, currentCell.col);
-
-    switch (gameState.playState) {
-        case 'start':
-            // If the player has left the start cell, the game is afoot
-            if (cellType !== 'start') {
-                gameState.playState = 'playing';
-            }
-            break;
-        case 'playing':
-            // If the player has entered the end cell, the game is done
-            if (cellType === 'end') {
-                gameState.playState = 'done';
-            }
-            break;
-        case 'done':
-            clearInterval(gameLoopInterval);
-            break;
-        default:
-            break;
-    }
-}
-
-function updateTimer(gameState) {
-    let timerString = '00:00.000';
-    if (gameState.playState === 'playing') {
-        if (gameState.startTime) {
-            const curTime = new Date();
-            const timeDif = curTime.valueOf() - gameState.startTime.valueOf();
-            const minutes = Math.floor(timeDif / 60000);
-            const seconds = (timeDif - (minutes * 60000)) / 1000;
-
-            let minStr;
-            if (minutes === 0) {
-                minStr = '00';
-            } else if (minutes < 10) {
-                minStr = `0${minutes}`;
-            } else {
-                minStr = `${minutes}`;
-            }
-
-            let secStr;
-            if (seconds === 0) {
-                secStr = '00';
-            } else if (seconds < 10) {
-                secStr = `0${seconds}`;
-            } else {
-                secStr = `${seconds}`;
-            }
-
-            timerString = `${minStr}:${secStr}`;
-        } else {
-            gameState.startTime = new Date();
-        }
-
-        document.getElementById('timer').innerHTML = timerString;
-    }
-
 }
