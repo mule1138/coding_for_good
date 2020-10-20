@@ -56,8 +56,10 @@ function init() {
         // Set up the initial player state
         initPlayerState();
 
-        // Start the game loop
-        gameState.gameLoopInterval = setInterval(drawFrame, 1000 / FRAMES_PER_SECOND);
+        // TODO: Replace the single drawFrame call with a game loop. Start
+        // the game loop using the setInterval built-in function to call
+        // drawFrame many times a second
+        drawFrame();
     }
 
     console.log("Maze game initialized");
@@ -135,18 +137,17 @@ function handleButtonEvent(key, isDown) {
  * calculate the current state of the game and re-render the screen.
  */
 function drawFrame() {
-    // Update the state of the game (start, playing, done);
-    updatePlayState(gameState);
+    console.log('drawFrame called');
 
-    // Update the Timer
-    updateTimer(gameState);
+    // TODO: Update the play state of the game
 
-    // Update player state
-    updatePlayer(gameState);
+    // TODO: Update the timer
 
-    // Update the UI and render the scene
-    updateTimerDisplay(gameState);
-    renderer.render(gameState);
+    // TODO: Update the player position
+
+    // TODO: Update the UI
+
+    // TODO: Render the scene (fix this first)
 }
 
 function updateTimerDisplay(gameState) {
