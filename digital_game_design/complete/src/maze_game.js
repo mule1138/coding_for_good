@@ -4,6 +4,7 @@ import { updateTimer } from './libs/timer_lib.js';
 import { updatePlayState } from './libs/play_state_lib.js';
 import Renderer_2D from './renderer_2d.js';
 
+// The target number of game iterations per second
 const FRAMES_PER_SECOND = 30;
 
 // The game state.
@@ -41,19 +42,21 @@ function init() {
         alert('No maze to play. Go to the editor and create a maze.');
     } else {
         const canvas = document.getElementById('maze-canvas');
+
+        // Resize the canvas to properly fit in the space available
         canvas.height = canvas.clientHeight;
         canvas.width = canvas.clientWidth;
+
+        // create the renderer
+        renderer = new Renderer_2D(canvas);
 
         // Set up button state recording events
         initEvents();
 
-        // create the renderer
-        renderer = new Renderer_2D(gameState.maze, canvas);
-
         // Set up the initial player state
         initPlayerState();
 
-        // Start the game loop (30fps)
+        // Start the game loop
         gameState.gameLoopInterval = setInterval(drawFrame, 1000 / FRAMES_PER_SECOND);
     }
 
@@ -61,7 +64,7 @@ function init() {
 }
 
 /**
- * Function that sets the player's size and initial position
+ * Function that sets the player's initial state
  */
 function initPlayerState() {
     const startCell = gameState.maze.getStartCell();
@@ -95,7 +98,8 @@ function initEvents() {
 }
 
 /**
- * This is the function that handles a keydown or keyup event.
+ * This function handles a keydown or keyup event. This will update the key
+ * states of the keys that affect the game
  *
  * @param {string} key
  * @param {boolean} isDown
@@ -103,6 +107,7 @@ function initEvents() {
 function handleButtonEvent(key, isDown) {
     // console.log(`${key} is ${isDown ? 'down' : 'up'}`);
 
+    // Different browsers call the arrow keys by different names (of course)
     switch (key) {
         case 'Up':
         case 'ArrowUp':
@@ -140,11 +145,12 @@ function drawFrame() {
     updatePlayer(gameState);
 
     // Update the UI and render the scene
-    setTimerDisplay(gameState.elapsedTime);
+    updateTimerDisplay(gameState);
     renderer.render(gameState);
 }
 
-function setTimerDisplay(timeDif) {
+function updateTimerDisplay(gameState) {
+    const timeDif = gameState.elapsedTime;
     const minutes = Math.floor(timeDif / 60000);
     const seconds = (timeDif - (minutes * 60000)) / 1000;
 

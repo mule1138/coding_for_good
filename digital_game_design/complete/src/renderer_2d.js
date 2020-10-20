@@ -10,29 +10,20 @@ const playerSprite = {
 }
 
 export default class Renderer_2D {
-    constructor(maze, canvasElement) {
-        this.maze = maze;
+    constructor(canvasElement) {
         this.canvas = canvasElement;
         this.ctx = this.canvas.getContext('2d');
     }
 
     render(gameState) {
-        const canvasCenter = {
-            x: Math.floor(this.canvas.clientWidth / 2),
-            y: Math.floor(this.canvas.clientHeight / 2)
-        }
-
         // Clear the canvas
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        // Draw Background
-        this.drawBackground(canvasCenter);
+        this.clearCanvas();
 
         // Save the current context state prior to drawing
         this.ctx.save();
 
-        // Set the scale if we want to
-        // this.ctx.scale(2, 2);
+        // Draw Background
+        this.drawBackground();
 
         // Draw the maze
         this.drawMaze(gameState);
@@ -44,7 +35,17 @@ export default class Renderer_2D {
         this.ctx.restore();
     }
 
-    drawBackground(canvasCenter) {
+    clearCanvas() {
+        // Wipe out everything in the entire canvas rect
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    drawBackground() {
+        const canvasCenter = {
+            x: Math.floor(this.canvas.clientWidth / 2),
+            y: Math.floor(this.canvas.clientHeight / 2)
+        }
+
         const r1 = Math.max(canvasCenter.x, canvasCenter.y)
         const r0 = 0.1 * r1;
         const bgRadialGradient = this.ctx.createRadialGradient(
@@ -58,16 +59,20 @@ export default class Renderer_2D {
 
     drawMaze(gameState) {
         // Draw a 2px border around the maze
-        const cellDims = this.maze.getCellDimensions();
-        const mazeWidthInUnits = cellDims.width * this.maze.width;
-        const mazeHeightInUnits = cellDims.height * this.maze.height;
+        const cellDims = gameState.maze.getCellDimensions();
+        const mazeWidthInUnits = cellDims.width * gameState.maze.width;
+        const mazeHeightInUnits = cellDims.height * gameState.maze.height;
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0, 0, mazeWidthInUnits + 8, mazeHeightInUnits + 8);
         this.ctx.fillStyle = 'gray';
         this.ctx.fillRect(2, 2, mazeWidthInUnits + 4, mazeHeightInUnits + 4);
+        // Offset the context so the maze and all contents draws within the border
         this.ctx.translate(4, 4);
 
+        // Initialze loop variables
         let cellType = null;
+        let row = 0
+        let col = 0;
         let bbox = {
             top: 0,
             left: 0,
@@ -75,12 +80,13 @@ export default class Renderer_2D {
             right: 0
         };
 
-        for (let row = 0; row < this.maze.height; ++row) {
+        // Loop through all of the maze cells and draw them
+        for (row = 0; row < gameState.maze.height; ++row) {
             bbox.top = row * cellDims.height;
             bbox.bottom = bbox.top + cellDims.height;
 
-            for (let col = 0; col < this.maze.width; ++col) {
-                cellType = this.maze.getCellType(row, col);
+            for (col = 0; col < gameState.maze.width; ++col) {
+                cellType = gameState.maze.getCellType(row, col);
                 bbox.left = col * cellDims.width;
                 bbox.right = bbox.left + cellDims.width;
                 this.ctx.fillStyle = mazeCellTypes[cellType].bgColor;
