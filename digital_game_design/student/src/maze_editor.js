@@ -1,5 +1,5 @@
 import { Maze, mazeCellTypes } from './maze.js';
-import {loadMaze, saveMaze} from './file_lib.js';
+import {loadMaze, saveMaze} from './libs/file_lib.js';
 
 const DEFAULT_WIDTH = 20;
 const DEFAULT_HEIGHT = 20;
