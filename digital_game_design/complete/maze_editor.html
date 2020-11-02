@@ -1,0 +1,58 @@
+<html>
+
+<head>
+    <title>
+        Maze Editor
+    </title>
+
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/editor.css">
+
+</head>
+
+<body>
+    <div style="font-weight: bold; font-size: x-large;">Maze Editor</div>
+    <table style="width: 100%;">
+        <tr>
+            <td width="300px">
+                <div class="label">Dimensions:</div>
+                <div style="display: grid; grid-template-columns: 60px 100px;">
+                    <div>Width:</div>
+                    <div><input id="width_input" type="number" style="width: 75px;"></div>
+                    <div>Height:</div>
+                    <div><input id="height_input" type="number" style="width: 75px;"></div>
+            </td>
+            <td>
+                <div id="cell_type_selector_container"></div>
+            </td>
+            <td style="width: 200px;">
+                <table>
+                    <tr>
+                        <td>
+                            <button class="button fileButton" id="new_button">New Maze</button>
+                        </td>
+                        <td rowspan="3">
+                            <button class="button" id="play_button" style="width: 100px; height: 100px;" onclick="window.location.href='maze_game.html';">Play!</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="button fileButton" id="load_button">Load Maze</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="button fileButton" id="save_button">Save Maze</button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <hr noshade="true" />
+    <div id='editor_container' class="editorContainer"></div>
+
+    <script type="module" src="./src/maze_editor.js"></script>
+</body>
+
+</html>
