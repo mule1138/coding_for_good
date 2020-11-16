@@ -1,7 +1,7 @@
 import { loadMaze } from './libs/file_lib.js';
-import { updatePlayer } from './libs/player_lib.js';
-import { updateTimer } from './libs/timer_lib.js';
-import { updatePlayState } from './libs/play_state_lib.js';
+import { updatePlayer } from './updaters/player_updater.js';
+import { updateTimer } from './updaters/timer_updater.js';
+import { updatePlayState } from './updaters/play_state_updater.js';
 import Renderer_2D from './renderer_2d.js';
 
 // The target number of game iterations per second
@@ -29,6 +29,7 @@ const gameState = {
 
 // The renderer object
 let renderer = null;
+
 
 // Initialze the game!
 init();

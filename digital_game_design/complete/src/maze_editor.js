@@ -90,7 +90,7 @@ function refreshEditorGrid() {
             attachCellEvents(cellDiv);
 
             // Set the cell specifics
-            cellType = mazeCellTypes[maze.getCellType(row, col)];
+            cellType = maze.getCellType(row, col);
             cellDiv.classList.add(cellType.class);
             cellDiv.setAttribute('data-is-path', cellType.isPath);
 

@@ -5,13 +5,13 @@ export function updatePlayState(gameState) {
     switch (gameState.playState) {
         case 'start':
             // If the player has left the start cell, the game is afoot
-            if (cellType !== 'start') {
+            if (cellType.type !== 'start') {
                 gameState.playState = 'playing';
             }
             break;
         case 'playing':
             // If the player has entered the end cell, the game is done
-            if (cellType === 'end') {
+            if (cellType.type === 'end') {
                 gameState.playState = 'done';
             }
             break;

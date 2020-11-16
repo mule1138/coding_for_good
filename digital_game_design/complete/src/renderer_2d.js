@@ -89,7 +89,7 @@ export default class Renderer_2D {
                 cellType = gameState.maze.getCellType(row, col);
                 bbox.left = col * cellDims.width;
                 bbox.right = bbox.left + cellDims.width;
-                this.ctx.fillStyle = mazeCellTypes[cellType].bgColor;
+                this.ctx.fillStyle = cellType.bgColor;
                 this.ctx.fillRect(bbox.left, bbox.top, bbox.right - bbox.left, bbox.bottom - bbox.top);
             }
         }

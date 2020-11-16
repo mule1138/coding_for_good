@@ -16,6 +16,7 @@ const DEFAULT_CELL_HEIGHT_UNITS = 32;
  */
 export const mazeCellTypes = {
     wall: {
+        type: 'wall',
         value: 0,
         label: 'Wall',
         class: 'mazeWall',
@@ -23,6 +24,7 @@ export const mazeCellTypes = {
         isPath: false
     },
     path: {
+        type: 'path',
         value: 1,
         label: 'Path',
         class: 'mazePath',
@@ -30,6 +32,7 @@ export const mazeCellTypes = {
         isPath: true
     },
     start: {
+        type: 'start',
         value: 2,
         label: 'Start',
         class: 'mazeStart',
@@ -37,6 +40,7 @@ export const mazeCellTypes = {
         isPath: true
     },
     end: {
+        type: 'end',
         value: 3,
         label: 'End',
         class: 'mazeEnd',
@@ -106,7 +110,15 @@ export class Maze {
     getCellType(row, col) {
         const rowStartIdx = row * this.width;
         const cellIdx = rowStartIdx + col;
-        return this.cells[cellIdx];
+
+        let cellTypeStr;
+        let cellType = null;
+        if (cellIdx >= 0 && cellIdx < this.cells.length) {
+            cellTypeStr = this.cells[cellIdx];
+            cellType = mazeCellTypes[cellTypeStr];
+        }
+
+        return cellType;
     }
 
     setCellType(row, col, cellType) {
@@ -200,8 +212,8 @@ export class Maze {
         const bbox = {};
         bbox['left'] = col * this.cellDimensions.width;
         bbox['top'] = row * this.cellDimensions.height;
-        bbox['right'] = bbox.left + this.cellDimensions.width;
-        bbox['bottom'] = bbox.top + this.cellDimensions.height;
+        bbox['right'] = bbox.left + this.cellDimensions.width - 1;
+        bbox['bottom'] = bbox.top + this.cellDimensions.height - 1;
 
         return bbox;
     }
