@@ -65,8 +65,13 @@ export function traverseLine(x0, y0, heading, maze, maxDist) {
 }
 
 function traverseSteepLine(x0, y0, heading, maze, maxDist) {
-    let x = Math.floor(x0);
-    let y = Math.floor(y0);
+    // let x = Math.floor(x0);
+    // let y = Math.floor(y0);
+    let x = x0;
+    let y = y0;
+    let nextY = y;
+    let nextX = x;
+    let dx = 0;
     let keepGoing = true;
     const headingRad = MathLib.degToRad(heading);
     let newCell, cellType, yDir, yExtent, xFraction;
@@ -84,20 +89,24 @@ function traverseSteepLine(x0, y0, heading, maze, maxDist) {
 
     // Iterate until we reach the end of the line, a wall, or the edge of the maze
     while (keepGoing) {
-        y += yDir;
-        x += xFraction;
-        newCell = maze.getCellFromXYUnits(x, y);
+        nextY = y + yDir;
+        dx += xFraction;
+        if (Math.abs(dx) > 0.5) {
+            nextX = (xFraction > 0) ? x + 1 : x - 1;
+            dx = 0;
+        }
+
+        newCell = maze.getCellFromXYUnits(nextX, nextY);
         if (newCell) {
             cellType = maze.getCellType(newCell.row, newCell.col);
-            if (cellType.isPath === false) {
-                y -= yDir;
-                x -= xFraction;
+            if (cellType.isPath === true) {
+                y = nextY;
+                x = nextX;
+            } else {
                 keepGoing = false;
             }
         } else {
             // We've gone past the maze extents. Take a step back and exit the loop.
-            y -= yDir;
-            x -= xFraction;
             keepGoing = false;
         }
 
@@ -106,37 +115,47 @@ function traverseSteepLine(x0, y0, heading, maze, maxDist) {
         }
     }
 
-    x = (heading < 180) ? Math.floor(x) : Math.ceil(x);
     const endpoint = { x: x, y: y };
     return endpoint;
 }
 
 function traverseShallowLine(x0, y0, heading, maze, maxDist) {
-    let x = Math.floor(x0);
-    let y = Math.floor(y0);
+    // let x = Math.floor(x0);
+    // let y = Math.floor(y0);
+    let x = x0;
+    let y = y0;
+    let nextY = y;
+    let nextX = x;
+    let dy = 0;
     let keepGoing = true;
     const headingRad = MathLib.degToRad(heading);
     let newCell, cellType, xDir, xExtent, yFraction;
 
     xDir = (heading > 45 && heading < 135) ? 1 : -1;
-    xExtent = x + Math.floor(maxDist * Math.sin(headingRad));
+    if (maxDist) {
+        xExtent = x + Math.floor(maxDist * Math.sin(headingRad));
+    }
     yFraction = -Math.cos(headingRad);
 
     while (keepGoing) {
-        x += xDir;
-        y += yFraction;
-        newCell = maze.getCellFromXYUnits(x, y);
+        nextX = x + xDir;
+        dy += yFraction;
+        if (Math.abs(dy) > 0.5) {
+            nextY = (yFraction > 0) ? y + 1 : y - 1;
+            dy = 0;
+        }
+
+        newCell = maze.getCellFromXYUnits(nextX, nextY);
         if (newCell) {
             cellType = maze.getCellType(newCell.row, newCell.col);
-            if (cellType.isPath === false) {
-                x -= xDir;
-                y -= yFraction;
+            if (cellType.isPath === true) {
+                x = nextX;
+                y = nextY;
+            } else {
                 keepGoing = false;
             }
         } else {
             // We've gone past the maze extents
-            x -= xDir;
-            y -= yFraction;
             keepGoing = false;
         }
 
@@ -145,7 +164,6 @@ function traverseShallowLine(x0, y0, heading, maze, maxDist) {
         }
     }
 
-    y = (heading < 90 || heading > 270) ? Math.ceil(y) : Math.floor(y);
     const endpoint = { x: x, y: y };
     return endpoint;
 }

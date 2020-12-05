@@ -232,8 +232,8 @@ export class Maze {
     getCellFromXYUnits(x, y) {
         let cell = null;
 
-        if (x < 0 || x > this.width * this.cellDimensions.width ||
-            y < 0 || y > this.height * this.cellDimensions.height) {
+        if (x < 0 || x >= this.width * this.cellDimensions.width ||
+            y < 0 || y >= this.height * this.cellDimensions.height) {
             // These coordinates are outside the maze boundaries
             cell = null;
         } else {
