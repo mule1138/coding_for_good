@@ -107,6 +107,17 @@ export class Maze {
         return JSON.stringify(mazeObj);
     }
 
+    getMazeExtents() {
+        const extents = {
+            rows: this.width,
+            cols: this.height,
+            xMax: this.width * this.cellDimensions.width,
+            yMax: this.height * this.cellDimensions.height
+        };
+
+        return extents;
+    }
+
     getCellType(row, col) {
         const rowStartIdx = row * this.width;
         const cellIdx = rowStartIdx + col;
@@ -219,7 +230,7 @@ export class Maze {
     }
 
     getCellFromXYUnits(x, y) {
-        let cell;
+        let cell = null;
 
         if (x < 0 || x > this.width * this.cellDimensions.width ||
             y < 0 || y > this.height * this.cellDimensions.height) {

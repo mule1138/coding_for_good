@@ -39,41 +39,6 @@ export function calcSlopeFromHeading(heading) {
     return slope;
 }
 
-export function traverseLine(x0, y0, heading, xInc, yInc, maxDist) {
-    const slope = calcSlopeFromHeading(heading);
-
-    // const headingRad = degToRad(heading);
-    // let maxPt = null;
-    // if (maxDist) {
-    //     maxPt = {};
-    //     maxPt[x] = x0 + (maxDist * Math.sin(headingRad));
-    //     maxPt[y] = y0 + (maxDist * Math.cos(headingRad));
-    //     maxPt[dist] = maxDist;
-    // }
-
-    const dx = heading < 180 ? xInc : -xInc;
-    const dy = (heading > 270 || heading < 90) ? -yInc : yInc;
-
-    let nextX, nextY;
-    if (dx < 0) {
-        nextX = x0 - (x0 % xInc);
-    } else {
-        nextX =
-    }
-
-    if (dy < 0) {
-        nextY = y0 - (y0 % yInc);
-    } else {
-        nextY = y0 + (yInc - (y0 % yInc));
-    }
-
-    let ptObj = { x: 0, y: 0, dist: 0 };
-    let nextY = y0
-    const pts = [];
-
-
-}
-
 export function calculateDeparturePoint(x0, y0, heading, bbox, maxDist) {
     const slope = calcSlopeFromHeading(heading);
 
