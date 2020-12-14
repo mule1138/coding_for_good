@@ -14,6 +14,7 @@ export default class Renderer_2D extends Renderer {
     constructor(canvasElement) {
         super(canvasElement);
         this.ctx = this.canvas.getContext('2d');
+        this.lastFrameTime = new Date().valueOf();
     }
 
     render(gameState) {
@@ -129,7 +130,6 @@ export default class Renderer_2D extends Renderer {
     }
 
     drawRay(gameState) {
-
         const startPt = gameState.player.position;
         const endPt = LineLib.traverseLine(startPt.x, startPt.y, gameState.player.heading, gameState.maze);
 
@@ -145,6 +145,11 @@ export default class Renderer_2D extends Renderer {
     }
 
     drawDebugText(gameState) {
+        const curTime = new Date().valueOf();
+        const frameTime = (curTime - this.lastFrameTime) / 1000;
+        const fps = Math.round(1 / frameTime);
+        this.lastFrameTime = curTime;
+
         let isSteep = false;
         const heading = gameState.player.heading;
         if (heading < 45 || heading > 315 || (heading > 135 && heading < 225)) {
@@ -154,23 +159,22 @@ export default class Renderer_2D extends Renderer {
         const rayEndPt = LineLib.traverseLine(gameState.player.position.x, gameState.player.position.y, gameState.player.heading, gameState.maze);
 
         const infoLines = [
+            `fps: ${fps}`,
             'Player info:',
-            `    pos: x: ${gameState.player.position.x}, y: ${gameState.player.position.y}`,
+            `    pos: (${gameState.player.position.x.toFixed(4)}, ${gameState.player.position.y.toFixed(4)})`,
             `    heading: ${gameState.player.heading}`,
-            `slope: ${MathLib.slopeFromHeading(gameState.player.heading)}`,
-            `inverse slope: ${MathLib.inverseSlopeFromHeading(gameState.player.heading)}`,
             `is steep: ${isSteep}`,
-            `ray end pt: (${rayEndPt.x}, ${rayEndPt.y})`
+            `ray end: (${rayEndPt.x.toFixed(4)}, ${rayEndPt.y.toFixed(4)})`
         ];
 
         this.ctx.save();
 
         let txtPos;
         infoLines.forEach((line, i) => {
-            txtPos = { x: this.canvas.clientWidth - 200, y: 20 * (i + 1) };
+            txtPos = { x: this.canvas.clientWidth - 200, y: 15 * (i + 1) };
 
             this.ctx.fillStyle = 'red';
-            this.ctx.font = '16px serif';
+            this.ctx.font = '15px serif';
             this.ctx.fillText(line, txtPos.x, txtPos.y);
         });
 
