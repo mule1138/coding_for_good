@@ -82,7 +82,10 @@ function traverseSteepLine(x0, y0, heading, maze, maxDist) {
     }
 
     // Calculate the x increment for each integer y step
-    invSlope = Math.abs(MathLib.inverseSlopeFromHeading(heading));
+    invSlope = Math.abs(1 / MathLib.calcSlopeFromHeading(heading));
+    if (isNaN(invSlope)) {
+        invSlope = 0;
+    }
     xFraction = (heading < 180) ? invSlope : -invSlope;
 
     // Iterate until we reach the end of the line, a wall, or the edge of the maze
@@ -129,7 +132,7 @@ function traverseShallowLine(x0, y0, heading, maze, maxDist) {
         xExtent = x + Math.floor(maxDist * Math.sin(headingRad));
     }
 
-    slope = Math.abs(MathLib.slopeFromHeading(heading));
+    slope = Math.abs(MathLib.calcSlopeFromHeading(heading));
     yFraction = (heading > 90 && heading < 270) ? slope : -slope;
 
     while (keepGoing) {
