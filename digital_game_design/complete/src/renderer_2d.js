@@ -1,5 +1,5 @@
-import { mazeCellTypes } from './maze.js';
-import { radToDeg, degToRad } from './libs/math_lib.js';
+import * as MathLib from './libs/math_lib.js';
+import Renderer from './renderer_base.js';
 
 const playerSprite = {
     sizeScale: {
@@ -9,9 +9,9 @@ const playerSprite = {
     color: 'royalblue'
 }
 
-export default class Renderer_2D {
+export default class Renderer_2D extends Renderer {
     constructor(canvasElement) {
-        this.canvas = canvasElement;
+        super(canvasElement);
         this.ctx = this.canvas.getContext('2d');
     }
 
@@ -105,13 +105,13 @@ export default class Renderer_2D {
 
         // Rotate the context around the center of the player sprite
         this.ctx.translate(centerPt.x, centerPt.y);
-        this.ctx.rotate(degToRad(gameState.player.heading));
+        this.ctx.rotate(MathLib.degToRad(gameState.player.heading));
         this.ctx.translate(-centerPt.x, -centerPt.y);
 
         // Create the sprite path
         this.ctx.beginPath();
         this.ctx.moveTo(centerPt.x, centerPt.y - (playerSize.width / 2));
-        this.ctx.arc(centerPt.x, centerPt.y, playerSize.width / 2, degToRad(10), degToRad(170), false);
+        this.ctx.arc(centerPt.x, centerPt.y, playerSize.width / 2, MathLib.degToRad(10), MathLib.degToRad(170), false);
         this.ctx.closePath();
 
         // Fill it and outline it
