@@ -1,4 +1,3 @@
-import { mazeCellTypes } from '../maze.js';
 import * as MathLib from './math_lib.js';
 
 export function calculateEndpoint(x0, y0, heading, xMax, yMax, dist) {
@@ -65,8 +64,6 @@ export function traverseLine(x0, y0, heading, maze, maxDist) {
 }
 
 function traverseSteepLine(x0, y0, heading, maze, maxDist) {
-    // let x = Math.floor(x0);
-    // let y = Math.floor(y0);
     let x = x0;
     let y = y0;
     let nextY = y;
@@ -74,7 +71,7 @@ function traverseSteepLine(x0, y0, heading, maze, maxDist) {
     let dx = 0;
     let keepGoing = true;
     const headingRad = MathLib.degToRad(heading);
-    let newCell, cellType, yDir, yExtent, xFraction;
+    let newCell, cellType, yDir, yExtent, xFraction, invSlope;
 
     // Direction of incrementing (up is neg, down is pos)
     yDir = (heading < 45 || heading > 315) ? -1 : 1;
@@ -85,7 +82,8 @@ function traverseSteepLine(x0, y0, heading, maze, maxDist) {
     }
 
     // Calculate the x increment for each integer y step
-    xFraction = Math.sin(headingRad);
+    invSlope = Math.abs(MathLib.inverseSlopeFromHeading(heading));
+    xFraction = (heading < 180) ? invSlope : -invSlope;
 
     // Iterate until we reach the end of the line, a wall, or the edge of the maze
     while (keepGoing) {
@@ -120,8 +118,6 @@ function traverseSteepLine(x0, y0, heading, maze, maxDist) {
 }
 
 function traverseShallowLine(x0, y0, heading, maze, maxDist) {
-    // let x = Math.floor(x0);
-    // let y = Math.floor(y0);
     let x = x0;
     let y = y0;
     let nextY = y;
@@ -129,13 +125,15 @@ function traverseShallowLine(x0, y0, heading, maze, maxDist) {
     let dy = 0;
     let keepGoing = true;
     const headingRad = MathLib.degToRad(heading);
-    let newCell, cellType, xDir, xExtent, yFraction;
+    let newCell, cellType, xDir, xExtent, yFraction, slope;
 
     xDir = (heading > 45 && heading < 135) ? 1 : -1;
     if (maxDist) {
         xExtent = x + Math.floor(maxDist * Math.sin(headingRad));
     }
-    yFraction = -Math.cos(headingRad);
+
+    slope = Math.abs(MathLib.slopeFromHeading(heading));
+    yFraction = (heading > 90 && heading < 270) ? slope : -slope;
 
     while (keepGoing) {
         nextX = x + xDir;
