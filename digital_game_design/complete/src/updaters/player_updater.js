@@ -30,7 +30,7 @@ function calcPlayerHeading(gameState) {
 
     if (gameState.buttons.right) {
         heading += PLAYER_ROTATION_SPEED;
-        if (heading > 360) {
+        if (heading > 359) {
             heading = heading - 360;
         }
     }

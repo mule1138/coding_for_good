@@ -89,10 +89,7 @@ function traverseSteepLine(x0, y0, heading, maze, maxDist) {
     while (keepGoing) {
         nextY = y + yDir;
         dx += xFraction;
-        if (Math.abs(dx) > 0.5) {
-            nextX = (xFraction > 0) ? x + 1 : x - 1;
-            dx = 0;
-        }
+        nextX = x0 + dx;
 
         newCell = maze.getCellFromXYUnits(nextX, nextY);
         if (newCell) {
@@ -138,10 +135,7 @@ function traverseShallowLine(x0, y0, heading, maze, maxDist) {
     while (keepGoing) {
         nextX = x + xDir;
         dy += yFraction;
-        if (Math.abs(dy) > 0.5) {
-            nextY = (yFraction > 0) ? y + 1 : y - 1;
-            dy = 0;
-        }
+        nextY = y0 + dy;
 
         newCell = maze.getCellFromXYUnits(nextX, nextY);
         if (newCell) {

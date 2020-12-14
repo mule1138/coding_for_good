@@ -1,4 +1,5 @@
 import * as MathLib from './libs/math_lib.js';
+import * as LineLib from './libs/line_lib.js';
 import Renderer from './renderer_base.js';
 
 const playerSprite = {
@@ -30,6 +31,10 @@ export default class Renderer_2D extends Renderer {
 
         // Draw the player
         this.drawPlayer(gameState);
+
+        this.drawRay(gameState);
+
+        this.drawDebugText(gameState);
 
         // Restore the context state
         this.ctx.restore();
@@ -119,6 +124,55 @@ export default class Renderer_2D extends Renderer {
         this.ctx.fill();
         this.ctx.strokeStyle = 'black';
         this.ctx.stroke();
+
+        this.ctx.restore();
+    }
+
+    drawRay(gameState) {
+
+        const startPt = gameState.player.position;
+        const endPt = LineLib.traverseLine(startPt.x, startPt.y, gameState.player.heading, gameState.maze);
+
+        this.ctx.save();
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(startPt.x, startPt.y);
+        this.ctx.lineTo(endPt.x, endPt.y);
+        this.ctx.strokeStyle = 'red';
+        this.ctx.stroke();
+
+        this.ctx.restore();
+    }
+
+    drawDebugText(gameState) {
+        let isSteep = false;
+        const heading = gameState.player.heading;
+        if (heading < 45 || heading > 315 || (heading > 135 && heading < 225)) {
+            isSteep = true;
+        }
+
+        const rayEndPt = LineLib.traverseLine(gameState.player.position.x, gameState.player.position.y, gameState.player.heading, gameState.maze);
+
+        const infoLines = [
+            'Player info:',
+            `    pos: x: ${gameState.player.position.x}, y: ${gameState.player.position.y}`,
+            `    heading: ${gameState.player.heading}`,
+            `slope: ${MathLib.slopeFromHeading(gameState.player.heading)}`,
+            `inverse slope: ${MathLib.inverseSlopeFromHeading(gameState.player.heading)}`,
+            `is steep: ${isSteep}`,
+            `ray end pt: (${rayEndPt.x}, ${rayEndPt.y})`
+        ];
+
+        this.ctx.save();
+
+        let txtPos;
+        infoLines.forEach((line, i) => {
+            txtPos = { x: this.canvas.clientWidth - 200, y: 20 * (i + 1) };
+
+            this.ctx.fillStyle = 'red';
+            this.ctx.font = '16px serif';
+            this.ctx.fillText(line, txtPos.x, txtPos.y);
+        });
 
         this.ctx.restore();
     }
