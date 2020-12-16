@@ -10,11 +10,10 @@ const playerSprite = {
     color: 'royalblue'
 }
 
-export default class Renderer_2D extends Renderer {
+export default class Renderer2d extends Renderer {
     constructor(canvasElement) {
         super(canvasElement);
         this.ctx = this.canvas.getContext('2d');
-        this.lastFrameTime = new Date().valueOf();
     }
 
     render(gameState) {
@@ -145,10 +144,7 @@ export default class Renderer_2D extends Renderer {
     }
 
     drawDebugText(gameState) {
-        const curTime = new Date().valueOf();
-        const frameTime = (curTime - this.lastFrameTime) / 1000;
-        const fps = Math.round(1 / frameTime);
-        this.lastFrameTime = curTime;
+        const fps = this.calculateFPS();
 
         let isSteep = false;
         const heading = gameState.player.heading;

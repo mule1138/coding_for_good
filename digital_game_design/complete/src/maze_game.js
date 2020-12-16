@@ -2,7 +2,8 @@ import { loadMaze } from './libs/file_lib.js';
 import { updatePlayer } from './updaters/player_updater.js';
 import { updateTimer } from './updaters/timer_updater.js';
 import { updatePlayState } from './updaters/play_state_updater.js';
-import Renderer_2D from './renderer_2d.js';
+import Renderer from './renderer_2d.js';
+// import Renderer from './renderer_raycast.js';
 
 // The target number of game iterations per second
 const FRAMES_PER_SECOND = 30;
@@ -49,7 +50,7 @@ function init() {
         canvas.width = canvas.clientWidth;
 
         // create the renderer
-        renderer = new Renderer_2D(canvas);
+        renderer = new Renderer(canvas);
 
         // Set up button state recording events
         initEvents();
