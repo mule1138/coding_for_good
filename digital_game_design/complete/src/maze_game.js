@@ -2,8 +2,8 @@ import { loadMaze } from './libs/file_lib.js';
 import { updatePlayer } from './updaters/player_updater.js';
 import { updateTimer } from './updaters/timer_updater.js';
 import { updatePlayState } from './updaters/play_state_updater.js';
-// import Renderer from './renderer_2d.js';
-import Renderer from './renderer_raycast.js';
+import Renderer2d from './renderer_2d.js';
+import RendererRaycast from './renderer_raycast.js';
 
 // The target number of game iterations per second
 const FRAMES_PER_SECOND = 30;
@@ -29,7 +29,7 @@ const gameState = {
 }
 
 // The renderer object
-let renderer = null;
+let renderer, renderer2d, rendererRaycast;
 
 
 // Initialze the game!
@@ -50,7 +50,9 @@ function init() {
         canvas.width = canvas.clientWidth;
 
         // create the renderer
-        renderer = new Renderer(canvas);
+        renderer2d = new Renderer2d(canvas);
+        rendererRaycast = new RendererRaycast(canvas);
+        renderer = renderer2d;
 
         // Set up button state recording events
         initEvents();
@@ -96,6 +98,18 @@ function initEvents() {
 
     document.addEventListener('keyup', (evt) => {
         handleButtonEvent(evt.key, false);
+    });
+
+    document.getElementById('2d_radio').addEventListener('change', (evt) => {
+        if (evt.target.checked === true) {
+            renderer = renderer2d;
+        }
+    });
+
+    document.getElementById('3d_radio').addEventListener('change', (evt) => {
+        if (evt.target.checked === true) {
+            renderer = rendererRaycast;
+        }
     });
 }
 

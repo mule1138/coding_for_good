@@ -2,7 +2,7 @@ import Renderer from './renderer_base.js';
 import * as MathLib from './libs/math_lib.js';
 import * as LineLib from './libs/line_lib.js';
 
-const HORIZONTAL_AOV = 68;
+const HORIZONTAL_AOV = 60;
 const VERTICAL_AOV = (HORIZONTAL_AOV / 4) * 3;
 const GAME_WIDTH = 640;
 const GAME_HEIGHT = (GAME_WIDTH / 4) * 3;
@@ -97,6 +97,7 @@ export default class Renderer_Raycast extends Renderer {
             wallBottomPixel = wallBottomPixel > GAME_HEIGHT ? GAME_HEIGHT : wallBottomPixel;
             wallTopPixel = wallTopPixel < 0 ? 0 : wallTopPixel;
 
+            // Draw the wall sliver for this column
             this.ctx.beginPath();
             this.ctx.strokeStyle = this.calculateWallColor(rayLength);
             this.ctx.moveTo(pixel, wallBottomPixel);

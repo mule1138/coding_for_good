@@ -4,11 +4,6 @@
     display: block;
 }
 
-.label {
-    font-size: large;
-    font-weight: bold;
-}
-
 .editorContainer {
     position: relative;
     width: 90%;

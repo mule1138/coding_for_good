@@ -2,7 +2,7 @@ import * as MathLib from './libs/math_lib.js';
 import * as LineLib from './libs/line_lib.js';
 import Renderer from './renderer_base.js';
 
-const HORIZONTAL_AOV = 68;
+const HORIZONTAL_AOV = 60;
 const GAME_WIDTH = 640;
 const PIXELS_PER_RAY = 1;
 
@@ -141,7 +141,7 @@ export default class Renderer2d extends Renderer {
         this.ctx.beginPath();
         this.ctx.moveTo(startPt.x, startPt.y);
         this.ctx.lineTo(endPt.x, endPt.y);
-        this.ctx.strokeStyle = 'red';
+        this.ctx.strokeStyle = 'lightblue';
         this.ctx.stroke();
 
         this.ctx.restore();
@@ -163,7 +163,7 @@ export default class Renderer2d extends Renderer {
             this.ctx.beginPath();
             this.ctx.moveTo(startPt.x, startPt.y);
             this.ctx.lineTo(rayEndPt.x, rayEndPt.y);
-            this.ctx.strokeStyle = 'red';
+            this.ctx.strokeStyle = 'lightblue';
             this.ctx.stroke();
         }
 
