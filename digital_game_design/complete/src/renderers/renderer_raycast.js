@@ -1,6 +1,6 @@
 import Renderer from './renderer_base.js';
-import * as MathLib from './libs/math_lib.js';
-import * as LineLib from './libs/line_lib.js';
+import * as MathLib from '../libs/math_lib.js';
+import * as LineLib from '../libs/line_lib.js';
 
 const HORIZONTAL_AOV = 60;
 const VERTICAL_AOV = (HORIZONTAL_AOV / 4) * 3;
