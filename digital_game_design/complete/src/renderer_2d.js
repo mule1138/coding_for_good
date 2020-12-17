@@ -2,6 +2,10 @@ import * as MathLib from './libs/math_lib.js';
 import * as LineLib from './libs/line_lib.js';
 import Renderer from './renderer_base.js';
 
+const HORIZONTAL_AOV = 68;
+const GAME_WIDTH = 640;
+const PIXELS_PER_RAY = 1;
+
 const playerSprite = {
     sizeScale: {
         height: 1.0,
@@ -32,7 +36,7 @@ export default class Renderer2d extends Renderer {
         // Draw the player
         this.drawPlayer(gameState);
 
-        this.drawRay(gameState);
+        this.drawRayFan(gameState);
 
         this.drawDebugText(gameState);
 
@@ -143,6 +147,29 @@ export default class Renderer2d extends Renderer {
         this.ctx.restore();
     }
 
+    drawRayFan(gameState) {
+        const startPt = gameState.player.position;
+        const rayCount = Math.floor(GAME_WIDTH / PIXELS_PER_RAY);
+
+        this.ctx.save();
+
+        let pixel = -PIXELS_PER_RAY;
+        let rayHeading, rayEndPt;
+        for (let i = 0; i < rayCount; ++i) {
+            pixel += PIXELS_PER_RAY;
+            rayHeading = this.calculateRayHeading(pixel, gameState.player.heading);
+            rayEndPt = LineLib.traverseLine(startPt.x, startPt.y, rayHeading, gameState.maze);
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(startPt.x, startPt.y);
+            this.ctx.lineTo(rayEndPt.x, rayEndPt.y);
+            this.ctx.strokeStyle = 'red';
+            this.ctx.stroke();
+        }
+
+        this.ctx.restore();
+    }
+
     drawDebugText(gameState) {
         const fps = this.calculateFPS();
 
@@ -175,6 +202,22 @@ export default class Renderer2d extends Renderer {
         });
 
         this.ctx.restore();
+    }
+
+    calculateRayHeading(pixel, cameraHeading) {
+        const midAOV = HORIZONTAL_AOV / 2;
+        const minRayAngle = cameraHeading - midAOV;
+
+        const rayAngleInFOV = HORIZONTAL_AOV * (pixel / GAME_WIDTH);
+        let rayHeading = minRayAngle + rayAngleInFOV;
+
+        if (rayHeading < 0) {
+            rayHeading += 360;
+        } else if (rayHeading > 359) {
+            rayHeading -= 360;
+        }
+
+        return rayHeading;
     }
 };
 

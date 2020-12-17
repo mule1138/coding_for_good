@@ -1,11 +1,19 @@
 import Renderer from './renderer_base.js';
+import * as MathLib from './libs/math_lib.js';
 import * as LineLib from './libs/line_lib.js';
 
 const HORIZONTAL_AOV = 68;
-const VERTICAL_AOV = HORIZONTAL_AOV / 4 * 3;
+const VERTICAL_AOV = (HORIZONTAL_AOV / 4) * 3;
 const GAME_WIDTH = 640;
-const GAME_HEIGHT = GAME_WIDTH / 4 * 3;
+const GAME_HEIGHT = (GAME_WIDTH / 4) * 3;
+const PIXELS_PER_RAY = 1;
 const EYE_LEVEL = 64;
+
+const WALL_HEIGHT = 96;
+const WALL_COLOR = {r: 0, g: 0, b: 0};
+
+const FOG_COLOR = { r: 255, g: 255, b: 255 };
+const FULL_FOG_DIST = 750;
 
 export default class Renderer_Raycast extends Renderer {
     constructor(canvasElement) {
@@ -61,7 +69,40 @@ export default class Renderer_Raycast extends Renderer {
     }
 
     drawMaze(gameState) {
+        const rayCount = Math.floor(GAME_WIDTH / PIXELS_PER_RAY);
+        const rayOffset = PIXELS_PER_RAY / 2;
+        const degPerPixel = VERTICAL_AOV / GAME_WIDTH;
+        const uppConst = (Math.tan(MathLib.degToRad(VERTICAL_AOV / 2))) / (GAME_HEIGHT / 2);
+        const cameraPos = {
+            x: gameState.player.position.x,
+            y: gameState.player.position.y,
+            z: EYE_LEVEL,
+            heading: gameState.player.heading,
+        }
 
+        let rayHeading, rayEndPt, rayLength, vertUnitsPerPixel, wallBottomPixel, wallTopPixel;
+        let fogAlpha = 0;
+        let pixel = -PIXELS_PER_RAY;
+        this.ctx.lineWidth = PIXELS_PER_RAY;
+        for (let i = 0; i < rayCount; ++i) {
+            pixel += PIXELS_PER_RAY;
+            rayHeading = this.calculateRayHeading(pixel, cameraPos.heading);
+            rayEndPt = LineLib.traverseLine(cameraPos.x, cameraPos.y, rayHeading, gameState.maze);
+            rayLength = MathLib.calcDistance(cameraPos.x, cameraPos.y, rayEndPt.x, rayEndPt.y);
+            vertUnitsPerPixel = uppConst * rayLength;
+            wallBottomPixel = (GAME_HEIGHT / 2) + (EYE_LEVEL / vertUnitsPerPixel);
+            wallTopPixel = wallBottomPixel - (WALL_HEIGHT / vertUnitsPerPixel);
+
+            // Keep walls in the game window
+            wallBottomPixel = wallBottomPixel > GAME_HEIGHT ? GAME_HEIGHT : wallBottomPixel;
+            wallTopPixel = wallTopPixel < 0 ? 0 : wallTopPixel;
+
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = this.calculateWallColor(rayLength);
+            this.ctx.moveTo(pixel, wallBottomPixel);
+            this.ctx.lineTo(pixel, wallTopPixel);
+            this.ctx.stroke();
+        }
     }
 
     drawDebugText(gameState) {
@@ -86,5 +127,31 @@ export default class Renderer_Raycast extends Renderer {
         });
 
         this.ctx.restore();
+    }
+
+    calculateRayHeading(pixel, cameraHeading) {
+        const midAOV = HORIZONTAL_AOV / 2;
+        const minRayAngle = cameraHeading - midAOV;
+
+        const rayAngleInFOV = HORIZONTAL_AOV * (pixel / GAME_WIDTH);
+        let rayHeading = minRayAngle + rayAngleInFOV;
+
+        if (rayHeading < 0) {
+            rayHeading += 360;
+        } else if (rayHeading > 359) {
+            rayHeading -= 360;
+        }
+
+        return rayHeading;
+    }
+
+    calculateWallColor(distance) {
+        const fogFraction = distance / FULL_FOG_DIST;
+
+        const newRed = WALL_COLOR.r + ((FOG_COLOR.r - WALL_COLOR.r) * fogFraction);
+        const newGreen = WALL_COLOR.g + ((FOG_COLOR.g - WALL_COLOR.g) * fogFraction);
+        const newBlue = WALL_COLOR.b + ((FOG_COLOR.b - WALL_COLOR.b) * fogFraction);
+
+        return `rgb(${Math.floor(newRed)}, ${Math.floor(newGreen)}, ${Math.floor(newBlue)})`;
     }
 }

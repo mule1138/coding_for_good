@@ -1,7 +1,7 @@
 import * as LineLib from '../libs/line_lib.js';
 
 export const PLAYER_SPEED = 5; // units the player can move per frame
-export const PLAYER_ROTATION_SPEED = 8 // degrees the player can turn per frame
+export const PLAYER_ROTATION_SPEED = 5 // degrees the player can turn per frame
 
 export function updatePlayer(gameState) {
     // Calculate the new player position
