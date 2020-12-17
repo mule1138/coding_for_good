@@ -20,6 +20,7 @@ export function calcSlopeFromHeading(heading) {
         case 90:
         case 180:
             slope = 0;
+            break;
         case 45:
         case 225:
             slope = 1;

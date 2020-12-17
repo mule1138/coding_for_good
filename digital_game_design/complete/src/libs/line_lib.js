@@ -74,7 +74,7 @@ function traverseSteepLine(x0, y0, heading, maze, maxDist) {
     let newCell, cellType, yDir, yExtent, xFraction, invSlope;
 
     // Direction of incrementing (up is neg, down is pos)
-    yDir = (heading < 45 || heading > 315) ? -1 : 1;
+    yDir = (heading < 90 || heading > 270) ? -1 : 1;
 
     // If there is a maxDist provided, find out where we should stop calculating
     if (maxDist) {
@@ -127,7 +127,7 @@ function traverseShallowLine(x0, y0, heading, maze, maxDist) {
     const headingRad = MathLib.degToRad(heading);
     let newCell, cellType, xDir, xExtent, yFraction, slope;
 
-    xDir = (heading > 45 && heading < 135) ? 1 : -1;
+    xDir = (heading < 180) ? 1 : -1;
     if (maxDist) {
         xExtent = x + Math.floor(maxDist * Math.sin(headingRad));
     }

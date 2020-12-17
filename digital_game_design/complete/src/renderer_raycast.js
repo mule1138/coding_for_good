@@ -138,7 +138,7 @@ export default class Renderer_Raycast extends Renderer {
 
         if (rayHeading < 0) {
             rayHeading += 360;
-        } else if (rayHeading > 359) {
+        } else if (rayHeading >= 360) {
             rayHeading -= 360;
         }
 
