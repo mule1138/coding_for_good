@@ -63,7 +63,6 @@ export default class Renderer_Raycast extends Renderer {
         bgGradient.addColorStop(0.5, 'white');
         bgGradient.addColorStop(0.5, 'white');
         bgGradient.addColorStop(1.0, 'forestgreen');
-
         this.ctx.fillStyle = bgGradient;
         this.ctx.fillRect(1, 1, GAME_WIDTH, GAME_HEIGHT);
     }
@@ -81,7 +80,6 @@ export default class Renderer_Raycast extends Renderer {
         }
 
         let rayHeading, rayEndPt, rayLength, vertUnitsPerPixel, wallBottomPixel, wallTopPixel;
-        let fogAlpha = 0;
         let pixel = -PIXELS_PER_RAY;
         this.ctx.lineWidth = PIXELS_PER_RAY;
         for (let i = 0; i < rayCount; ++i) {
